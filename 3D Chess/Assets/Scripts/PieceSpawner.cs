@@ -2,18 +2,18 @@ using UnityEngine;
 
 public class PieceSpawner : MonoBehaviour
 {
-    [SerializeField] Piece prefabPawnWhite = default;
-    [SerializeField] Piece prefabRookWhite = default;
-    [SerializeField] Piece prefabKnightWhite = default;
-    [SerializeField] Piece prefabBishopWhite = default;
-    [SerializeField] Piece prefabQueenWhite = default;
-    [SerializeField] Piece prefabKingWhite = default;
-    [SerializeField] Piece prefabPawnBlack = default;
-    [SerializeField] Piece prefabRookBlack = default;
-    [SerializeField] Piece prefabKnightBlack = default;
-    [SerializeField] Piece prefabBishopBlack = default;
-    [SerializeField] Piece prefabQueenBlack = default;
-    [SerializeField] Piece prefabKingBlack = default;
+    [SerializeField] private Piece prefabPawnWhite = default;
+    [SerializeField] private Piece prefabRookWhite = default;
+    [SerializeField] private Piece prefabKnightWhite = default;
+    [SerializeField] private Piece prefabBishopWhite = default;
+    [SerializeField] private Piece prefabQueenWhite = default;
+    [SerializeField] private Piece prefabKingWhite = default;
+    [SerializeField] private Piece prefabPawnBlack = default;
+    [SerializeField] private Piece prefabRookBlack = default;
+    [SerializeField] private Piece prefabKnightBlack = default;
+    [SerializeField] private Piece prefabBishopBlack = default;
+    [SerializeField] private Piece prefabQueenBlack = default;
+    [SerializeField] private Piece prefabKingBlack = default;
 
     public void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent, PieceMovement pieceMovement)
     {
