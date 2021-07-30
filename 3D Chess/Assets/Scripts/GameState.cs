@@ -4,7 +4,6 @@ using UnityEngine;
 public class GameState : MonoBehaviour
 {
     [SerializeField] private PieceSpawner pieceSpawner = default;
-    [SerializeField] private PieceMovement pieceMovement = default;
     [SerializeField] private GameObject pieces = default;
 
     public void UpdatePieceToPosition(Piece movedPiece, Vector3 newPosition)
@@ -29,12 +28,12 @@ public class GameState : MonoBehaviour
         }
 
         // Recreate the GameObjects.
-        pieceSpawner.CreateGameObjects(pieces, pieceMovement);
+        pieceSpawner.CreateGameObjects(pieces);
     }
 
     private void Awake()
     {
-        pieceSpawner.CreateGameObjects(pieces, pieceMovement);
+        pieceSpawner.CreateGameObjects(pieces);
     }
 
     private Piece FindPieceAtPosition(Vector3 position)

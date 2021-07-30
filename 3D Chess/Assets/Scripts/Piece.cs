@@ -3,7 +3,8 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     public PieceType type = default;
-    public PieceMovement pieceMovement = default;
+
+    private Events events = default;
 
     public void Select()
     {
@@ -17,6 +18,11 @@ public class Piece : MonoBehaviour
 
     private void OnMouseDown()
     {
-        pieceMovement.SetActivePiece(this);
+        events.PieceClickedEvent.Invoke(this);
+    }
+
+    private void Awake()
+    {
+        events = FindObjectOfType<Events>();
     }
 }

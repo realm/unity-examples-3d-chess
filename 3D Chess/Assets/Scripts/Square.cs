@@ -2,10 +2,15 @@ using UnityEngine;
 
 public class Square : MonoBehaviour
 {
-    [SerializeField] private EventManager eventManager = default;
+    private Events events = default;
 
     private void OnMouseDown()
     {
-        eventManager.SquareClickedEvent.Invoke(transform.position);
+        events.SquareClickedEvent.Invoke(transform.position);
+    }
+
+    private void Awake()
+    {
+        events = FindObjectOfType<Events>();
     }
 }
