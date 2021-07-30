@@ -1,15 +1,15 @@
 ﻿public enum PieceType : int
 {
-    WhitePawn,
-    WhiteBishop,
-    WhiteKnight,
-    WhiteRook,
-    WhiteQueen,
-    WhiteKing,
-    BlackPawn,
     BlackBishop,
+    BlackKing,
     BlackKnight,
-    BlackRook,
+    BlackPawn,
     BlackQueen,
-    BlackKing
+    BlackRook,
+    WhiteBishop,
+    WhiteKing,
+    WhiteKnight,
+    WhitePawn,
+    WhiteQueen,
+    WhiteRook
 }

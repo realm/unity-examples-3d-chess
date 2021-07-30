@@ -2,62 +2,38 @@ using UnityEngine;
 
 public class PieceSpawner : MonoBehaviour
 {
-    [SerializeField] private Piece prefabPawnWhite = default;
-    [SerializeField] private Piece prefabRookWhite = default;
-    [SerializeField] private Piece prefabKnightWhite = default;
-    [SerializeField] private Piece prefabBishopWhite = default;
-    [SerializeField] private Piece prefabQueenWhite = default;
-    [SerializeField] private Piece prefabKingWhite = default;
-    [SerializeField] private Piece prefabPawnBlack = default;
-    [SerializeField] private Piece prefabRookBlack = default;
-    [SerializeField] private Piece prefabKnightBlack = default;
-    [SerializeField] private Piece prefabBishopBlack = default;
-    [SerializeField] private Piece prefabQueenBlack = default;
-    [SerializeField] private Piece prefabKingBlack = default;
+    [SerializeField] private Piece prefabBlackBishop = default;
+    [SerializeField] private Piece prefabBlackKing = default;
+    [SerializeField] private Piece prefabBlackKnight = default;
+    [SerializeField] private Piece prefabBlackPawn = default;
+    [SerializeField] private Piece prefabBlackQueen = default;
+    [SerializeField] private Piece prefabBlackRook = default;
+
+    [SerializeField] private Piece prefabWhiteBishop = default;
+    [SerializeField] private Piece prefabWhiteKing = default;
+    [SerializeField] private Piece prefabWhiteKnight = default;
+    [SerializeField] private Piece prefabWhitePawn = default;
+    [SerializeField] private Piece prefabWhiteQueen = default;
+    [SerializeField] private Piece prefabWhiteRook = default;
 
     public void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent)
     {
-        Piece piecePrefab = default;
-
-        switch (pieceType)
+        Piece piecePrefab = pieceType switch
         {
-            case PieceType.WhitePawn:
-                piecePrefab = prefabPawnWhite;
-                break;
-            case PieceType.WhiteRook:
-                piecePrefab = prefabRookWhite;
-                break;
-            case PieceType.WhiteKnight:
-                piecePrefab = prefabKnightWhite;
-                break;
-            case PieceType.WhiteBishop:
-                piecePrefab = prefabBishopWhite;
-                break;
-            case PieceType.WhiteQueen:
-                piecePrefab = prefabQueenWhite;
-                break;
-            case PieceType.WhiteKing:
-                piecePrefab = prefabKingWhite;
-                break;
-            case PieceType.BlackPawn:
-                piecePrefab = prefabPawnBlack;
-                break;
-            case PieceType.BlackRook:
-                piecePrefab = prefabRookBlack;
-                break;
-            case PieceType.BlackKnight:
-                piecePrefab = prefabKnightBlack;
-                break;
-            case PieceType.BlackBishop:
-                piecePrefab = prefabBishopBlack;
-                break;
-            case PieceType.BlackQueen:
-                piecePrefab = prefabQueenBlack;
-                break;
-            case PieceType.BlackKing:
-                piecePrefab = prefabKingBlack;
-                break;
-        }
+            PieceType.BlackBishop => prefabBlackBishop,
+            PieceType.BlackKing => prefabBlackKing,
+            PieceType.BlackKnight => prefabBlackKnight,
+            PieceType.BlackPawn => prefabBlackPawn,
+            PieceType.BlackQueen => prefabBlackQueen,
+            PieceType.BlackRook => prefabBlackRook,
+            PieceType.WhiteBishop => prefabWhiteBishop,
+            PieceType.WhiteKing => prefabWhiteKing,
+            PieceType.WhiteKnight => prefabWhiteKnight,
+            PieceType.WhitePawn => prefabWhitePawn,
+            PieceType.WhiteQueen => prefabWhiteQueen,
+            PieceType.WhiteRook => prefabWhiteRook,
+            _ => throw new System.Exception("Invalid piece type.")
+        };
 
         Instantiate(piecePrefab, position, Quaternion.identity, parent.transform);
     }

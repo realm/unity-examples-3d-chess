@@ -5719,18 +5719,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d461b38997064cd49b0c74ea4b109621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPawnWhite: {fileID: 1738307170, guid: 48d5ea4ff810d0e4ea36af7235dd5fd7, type: 3}
-  prefabRookWhite: {fileID: 493173348, guid: 43ef2ba32fda59c42a1410ea490d494b, type: 3}
-  prefabKnightWhite: {fileID: 2030690331, guid: 7248632fb471af143947a88a47eae959, type: 3}
-  prefabBishopWhite: {fileID: 1005669050, guid: cd05c23b470229c44a8d53d6e86225f6, type: 3}
-  prefabQueenWhite: {fileID: 1094225472, guid: 6f38c700bedefe64f8364436528e5c3d, type: 3}
-  prefabKingWhite: {fileID: 203866059, guid: 9e4e635002b6a524ca896adb28e8e388, type: 3}
-  prefabPawnBlack: {fileID: 331793341, guid: edd4f3477fd5a8b4599bf6c0dac39f1d, type: 3}
-  prefabRookBlack: {fileID: 385391201, guid: 9d3e9c36668dcfe44b524760a4c3a3b5, type: 3}
-  prefabKnightBlack: {fileID: 895963212, guid: b6c7ad354ac474944ba26b2895a59759, type: 3}
-  prefabBishopBlack: {fileID: 385521315, guid: a71fd906a2159e247ab4d632e46947db, type: 3}
-  prefabQueenBlack: {fileID: 1486722772, guid: 1f7a3b3d104b8e44cb39f5356ae1d0bb, type: 3}
-  prefabKingBlack: {fileID: 1194346101, guid: 861e95a585868b643bf2e4a1d0ae63b7, type: 3}
+  prefabBlackBishop: {fileID: 385521315, guid: a71fd906a2159e247ab4d632e46947db, type: 3}
+  prefabBlackKing: {fileID: 1194346101, guid: 861e95a585868b643bf2e4a1d0ae63b7, type: 3}
+  prefabBlackKnight: {fileID: 895963212, guid: b6c7ad354ac474944ba26b2895a59759, type: 3}
+  prefabBlackPawn: {fileID: 331793341, guid: edd4f3477fd5a8b4599bf6c0dac39f1d, type: 3}
+  prefabBlackQueen: {fileID: 1486722772, guid: 1f7a3b3d104b8e44cb39f5356ae1d0bb, type: 3}
+  prefabBlackRook: {fileID: 385391201, guid: 9d3e9c36668dcfe44b524760a4c3a3b5, type: 3}
+  prefabWhiteBishop: {fileID: 1005669050, guid: cd05c23b470229c44a8d53d6e86225f6, type: 3}
+  prefabWhiteKing: {fileID: 203866059, guid: 9e4e635002b6a524ca896adb28e8e388, type: 3}
+  prefabWhiteKnight: {fileID: 2030690331, guid: 7248632fb471af143947a88a47eae959, type: 3}
+  prefabWhitePawn: {fileID: 1738307170, guid: 48d5ea4ff810d0e4ea36af7235dd5fd7, type: 3}
+  prefabWhiteQueen: {fileID: 1094225472, guid: 6f38c700bedefe64f8364436528e5c3d, type: 3}
+  prefabWhiteRook: {fileID: 493173348, guid: 43ef2ba32fda59c42a1410ea490d494b, type: 3}
 --- !u!4 &8472264306430443659
 Transform:
   m_ObjectHideFlags: 0
