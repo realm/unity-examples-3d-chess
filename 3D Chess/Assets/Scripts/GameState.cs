@@ -23,7 +23,7 @@ public class GameState : MonoBehaviour
     public void ResetGame()
     {
         // Destroy all GameObjects.
-        foreach (Piece piece in pieces.GetComponentsInChildren<Piece>())
+        foreach (var piece in pieces.GetComponentsInChildren<Piece>())
         {
             Destroy(piece.gameObject);
         }
