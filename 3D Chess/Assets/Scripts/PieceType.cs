@@ -1,4 +1,4 @@
-﻿public enum PieceType : int
+﻿public enum PieceType
 {
     BlackBishop,
     BlackKing,
