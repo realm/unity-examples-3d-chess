@@ -18,7 +18,7 @@ public class PieceSpawner : MonoBehaviour
 
     public void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent)
     {
-        Piece piecePrefab = pieceType switch
+        var piecePrefab = pieceType switch
         {
             PieceType.BlackBishop => prefabBlackBishop,
             PieceType.BlackKing => prefabBlackKing,
