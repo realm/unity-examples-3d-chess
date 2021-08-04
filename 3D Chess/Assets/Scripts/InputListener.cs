@@ -9,17 +9,17 @@ public class InputListener : MonoBehaviour
 
     private void OnEnable()
     {
-        events.PieceClickedEvent.AddListener(PieceClickedListener);
-        events.SquareClickedEvent.AddListener(SquareClickedListener);
+        events.PieceClickedEvent.AddListener(OnPieceClicked);
+        events.SquareClickedEvent.AddListener(OnSquareClicked);
     }
 
     private void OnDisable()
     {
-        events.PieceClickedEvent.RemoveListener(PieceClickedListener);
-        events.SquareClickedEvent.RemoveListener(SquareClickedListener);
+        events.PieceClickedEvent.RemoveListener(OnPieceClicked);
+        events.SquareClickedEvent.RemoveListener(OnSquareClicked);
     }
 
-    private void PieceClickedListener(Piece piece)
+    private void OnPieceClicked(Piece piece)
     {
         if (activePiece != null)
         {
@@ -29,7 +29,7 @@ public class InputListener : MonoBehaviour
         activePiece.Select();
     }
 
-    private void SquareClickedListener(Vector3 position)
+    private void OnSquareClicked(Vector3 position)
     {
         if (activePiece != null)
         {
