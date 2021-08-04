@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InptListener : MonoBehaviour
+public class InputListener : MonoBehaviour
 {
     [SerializeField] private Events events = default;
     [SerializeField] private GameState gameState = default;
