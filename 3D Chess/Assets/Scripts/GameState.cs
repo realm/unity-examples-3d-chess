@@ -6,7 +6,7 @@ public class GameState : MonoBehaviour
     [SerializeField] private PieceSpawner pieceSpawner = default;
     [SerializeField] private GameObject pieces = default;
 
-    public void UpdatePieceToPosition(Piece movedPiece, Vector3 newPosition)
+    public void MovePiece(Piece movedPiece, Vector3 newPosition)
     {
         // Check if there is already a piece at the new position and if so, destroy it.
         var attackedPiece = FindPieceAtPosition(newPosition);

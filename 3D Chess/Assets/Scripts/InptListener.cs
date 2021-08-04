@@ -33,7 +33,7 @@ public class InptListener : MonoBehaviour
     {
         if (activePiece != null)
         {
-            gameState.UpdatePieceToPosition(activePiece, position);
+            gameState.MovePiece(activePiece, position);
             activePiece.Deselect();
             activePiece = null;
         }
