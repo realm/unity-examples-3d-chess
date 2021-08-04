@@ -21,10 +21,7 @@ public class InputListener : MonoBehaviour
 
     private void OnPieceClicked(Piece piece)
     {
-        if (activePiece != null)
-        {
-            activePiece.Deselect();
-        }
+        activePiece?.Deselect();
         activePiece = piece;
         activePiece.Select();
     }
