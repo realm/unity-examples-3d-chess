@@ -5,15 +5,17 @@ public class Piece : MonoBehaviour
     public PieceType type = default;
 
     private Events events = default;
+    private Color selectedColor = new Color(1, 0, 0, 1);
+    private Color deselectedColor = new Color(1, 1, 1, 1);
 
     public void Select()
     {
-        gameObject.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+        gameObject.GetComponent<Renderer>().material.color = selectedColor;
     }
 
     public void Deselect()
     {
-        gameObject.GetComponent<Renderer>().material.color = new Color(1, 1, 1, 1);
+        gameObject.GetComponent<Renderer>().material.color = deselectedColor;
     }
 
     private void OnMouseDown()
