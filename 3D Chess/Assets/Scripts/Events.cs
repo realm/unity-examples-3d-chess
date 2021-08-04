@@ -6,6 +6,6 @@ public class SquareClickedEvent : UnityEvent<Vector3> { }
 
 public class Events : MonoBehaviour
 {
-    public PieceClickedEvent PieceClickedEvent = new PieceClickedEvent();
-    public SquareClickedEvent SquareClickedEvent = new SquareClickedEvent();
+    public readonly PieceClickedEvent PieceClickedEvent = new PieceClickedEvent();
+    public readonly SquareClickedEvent SquareClickedEvent = new SquareClickedEvent();
 }
