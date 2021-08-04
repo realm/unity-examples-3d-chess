@@ -9,7 +9,7 @@ public class GameState : MonoBehaviour
     public void MovePiece(Piece movedPiece, Vector3 newPosition)
     {
         // Check if there is already a piece at the new position and if so, destroy it.
-        var attackedPiece = FindPieceAtPosition(newPosition);
+        var attackedPiece = FindPiece(newPosition);
         if (attackedPiece != null)
         {
             Destroy(attackedPiece.gameObject);
@@ -36,7 +36,7 @@ public class GameState : MonoBehaviour
         pieceSpawner.CreateGameObjects(pieces);
     }
 
-    private Piece FindPieceAtPosition(Vector3 position)
+    private Piece FindPiece(Vector3 position)
     {
         return pieces.GetComponentsInChildren<Piece>()
             .FirstOrDefault(piece => piece.transform.position == position);
