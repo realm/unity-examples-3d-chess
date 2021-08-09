@@ -5,8 +5,8 @@ public class PieceEntity : RealmObject
 {
     public PieceType PieceType
     {
-        get { return (PieceType)Type; }
-        set { Type = (int)value; }
+        get => (PieceType)Type;
+        set => Type = (int)value;
     }
 
     public Vector3 Position
