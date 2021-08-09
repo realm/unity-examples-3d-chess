@@ -20,9 +20,9 @@ public class PieceEntity : RealmObject
         }
     }
 
-    public float PositionX { get; set; }
-    public float PositionY { get; set; }
-    public float PositionZ { get; set; }
+    public float PositionX { get; private set; }
+    public float PositionY { get; private set; }
+    public float PositionZ { get; private set; }
 
     private int Type { get; set; }
 
