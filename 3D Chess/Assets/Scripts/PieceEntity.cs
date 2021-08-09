@@ -11,7 +11,7 @@ public class PieceEntity : RealmObject
 
     public Vector3 Position
     {
-        get { return new Vector3(PositionX, PositionY, PositionZ); }
+        get => new Vector3(PositionX, PositionY, PositionZ);
         set
         {
             PositionX = value.x;
