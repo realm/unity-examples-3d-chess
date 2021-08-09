@@ -29,7 +29,7 @@ public class GameState : MonoBehaviour
         var pieceEntity = FindPieceEntity(oldPosition);
         realm.Write(() =>
         {
-            pieceEntity.SetPosition(newPosition);
+            pieceEntity.Position = newPosition;
         });
 
         // Update the movedPiece's GameObject.
@@ -70,8 +70,8 @@ public class GameState : MonoBehaviour
         // Each RealmObject needs a corresponding GameObject to represent it.
         foreach (PieceEntity pieceEntity in pieceEntities)
         {
-            PieceType type = (PieceType)pieceEntity.Type;
-            Vector3 position = pieceEntity.GetPosition();
+            PieceType type = pieceEntity.PieceType;
+            Vector3 position = pieceEntity.Position;
             pieceSpawner.SpawnPiece(type, position, pieces);
         }
     }
