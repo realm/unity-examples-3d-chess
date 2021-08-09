@@ -7,8 +7,8 @@ public class GameState : MonoBehaviour
     [SerializeField] private PieceSpawner pieceSpawner = default;
     [SerializeField] private GameObject pieces = default;
 
-    private Realm realm = default;
-    private IQueryable<PieceEntity> pieceEntities = default;
+    private Realm realm;
+    private IQueryable<PieceEntity> pieceEntities;
 
     public void MovePiece(Piece movedPiece, Vector3 newPosition)
     {
