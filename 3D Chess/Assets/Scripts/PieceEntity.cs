@@ -28,10 +28,8 @@ public class PieceEntity : RealmObject
 
     public PieceEntity(PieceType type, Vector3 position)
     {
-        Type = (int)type;
-        PositionX = position.x;
-        PositionY = position.y;
-        PositionZ = position.z;
+        PieceType = type;
+        Position = position;
     }
 
     private PieceEntity()
