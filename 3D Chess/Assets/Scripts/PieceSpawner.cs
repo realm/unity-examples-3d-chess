@@ -1,3 +1,5 @@
+using Realms;
+using System.Linq;
 using UnityEngine;
 
 public class PieceSpawner : MonoBehaviour
@@ -16,30 +18,37 @@ public class PieceSpawner : MonoBehaviour
     [SerializeField] private Piece prefabWhiteQueen = default;
     [SerializeField] private Piece prefabWhiteRook = default;
 
-    public void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent)
+    public void LoadBoard(GameObject parent)
     {
-        var piecePrefab = pieceType switch
-        {
-            PieceType.BlackBishop => prefabBlackBishop,
-            PieceType.BlackKing => prefabBlackKing,
-            PieceType.BlackKnight => prefabBlackKnight,
-            PieceType.BlackPawn => prefabBlackPawn,
-            PieceType.BlackQueen => prefabBlackQueen,
-            PieceType.BlackRook => prefabBlackRook,
-            PieceType.WhiteBishop => prefabWhiteBishop,
-            PieceType.WhiteKing => prefabWhiteKing,
-            PieceType.WhiteKnight => prefabWhiteKnight,
-            PieceType.WhitePawn => prefabWhitePawn,
-            PieceType.WhiteQueen => prefabWhiteQueen,
-            PieceType.WhiteRook => prefabWhiteRook,
-            _ => throw new System.Exception("Invalid piece type.")
-        };
+        var realm = Realm.GetInstance();
+        var pieceEntities = realm.All<PieceEntity>();
 
-        Instantiate(piecePrefab, position, Quaternion.identity, parent.transform);
+        // Check if we actually have PieceEntity's (which means we resume a game).
+        if (pieceEntities.Count() > 0)
+        {
+            // Each RealmObject needs a corresponding GameObject to represent it.
+            foreach (PieceEntity pieceEntity in pieceEntities)
+            {
+                PieceType type = pieceEntity.PieceType;
+                Vector3 position = pieceEntity.Position;
+                SpawnPiece(type, position, parent);
+            }
+        }
+        else
+        {
+            // No game was saved, create a new board.
+            CreateNewBoard(parent);
+        }
     }
 
-    public void CreateGameObjects(GameObject parent)
+    public void CreateNewBoard(GameObject parent)
     {
+        // First clear the board, then recreate it from scratch.
+        foreach (var piece in parent.GetComponentsInChildren<Piece>())
+        {
+            Destroy(piece.gameObject);
+        }
+
         SpawnPiece(PieceType.WhiteRook, new Vector3(1, 0, 1), parent);
         SpawnPiece(PieceType.WhiteKnight, new Vector3(2, 0, 1), parent);
         SpawnPiece(PieceType.WhiteBishop, new Vector3(3, 0, 1), parent);
@@ -75,5 +84,27 @@ public class PieceSpawner : MonoBehaviour
         SpawnPiece(PieceType.BlackBishop, new Vector3(6, 0, 8), parent);
         SpawnPiece(PieceType.BlackKnight, new Vector3(7, 0, 8), parent);
         SpawnPiece(PieceType.BlackRook, new Vector3(8, 0, 8), parent);
+    }
+
+    private void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent)
+    {
+        var piecePrefab = pieceType switch
+        {
+            PieceType.BlackBishop => prefabBlackBishop,
+            PieceType.BlackKing => prefabBlackKing,
+            PieceType.BlackKnight => prefabBlackKnight,
+            PieceType.BlackPawn => prefabBlackPawn,
+            PieceType.BlackQueen => prefabBlackQueen,
+            PieceType.BlackRook => prefabBlackRook,
+            PieceType.WhiteBishop => prefabWhiteBishop,
+            PieceType.WhiteKing => prefabWhiteKing,
+            PieceType.WhiteKnight => prefabWhiteKnight,
+            PieceType.WhitePawn => prefabWhitePawn,
+            PieceType.WhiteQueen => prefabWhiteQueen,
+            PieceType.WhiteRook => prefabWhiteRook,
+            _ => throw new System.Exception("Invalid piece type.")
+        };
+
+        Instantiate(piecePrefab, position, Quaternion.identity, parent.transform);
     }
 }
