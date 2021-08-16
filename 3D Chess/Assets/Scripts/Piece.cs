@@ -29,7 +29,7 @@ public class Piece : MonoBehaviour
         {
             realm.Remove(pieceEntity);
         });
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     private void OnMouseDown()
@@ -48,10 +48,10 @@ public class Piece : MonoBehaviour
         var pieceEntities = realm.All<PieceEntity>();
         if (pieceEntities.Count() > 0)
         {
-            pieceEntity = pieceEntities.Where(pieceEntity =>
-                            pieceEntity.PositionX == transform.position.x &&
-                            pieceEntity.PositionY == transform.position.y &&
-                            pieceEntity.PositionZ == transform.position.z).FirstOrDefault();
+            pieceEntity = pieceEntities
+                .Filter("positionEntity.X == $0 && positionEntity.Y == $1 && positionEntity.Z == $2",
+                        transform.position.x, transform.position.y, transform.position.z)
+                .FirstOrDefault();
         }
         if (pieceEntity == null)
         {

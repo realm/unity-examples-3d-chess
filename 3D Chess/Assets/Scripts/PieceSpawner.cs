@@ -46,7 +46,7 @@ public class PieceSpawner : MonoBehaviour
         // First clear the board, then recreate it from scratch.
         foreach (var piece in parent.GetComponentsInChildren<Piece>())
         {
-            Destroy(piece.gameObject);
+            piece.RemoveFromBoard();
         }
 
         SpawnPiece(PieceType.WhiteRook, new Vector3(1, 0, 1), parent);

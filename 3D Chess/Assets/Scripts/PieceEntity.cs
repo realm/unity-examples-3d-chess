@@ -11,20 +11,12 @@ public class PieceEntity : RealmObject
 
     public Vector3 Position
     {
-        get => new Vector3(PositionX, PositionY, PositionZ);
-        set
-        {
-            PositionX = value.x;
-            PositionY = value.y;
-            PositionZ = value.z;
-        }
+        get => positionEntity.ToVector3();
+        set => positionEntity = new Vector3Entity(value);
     }
 
-    public float PositionX { get; private set; }
-    public float PositionY { get; private set; }
-    public float PositionZ { get; private set; }
-
     private int Type { get; set; }
+    private Vector3Entity positionEntity { get; set; }
 
     public PieceEntity(PieceType type, Vector3 position)
     {
@@ -35,5 +27,29 @@ public class PieceEntity : RealmObject
     private PieceEntity()
     {
 
+    }
+}
+
+public class Vector3Entity : EmbeddedObject
+{
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
+
+    private Vector3Entity()
+    {
+
+    }
+
+    public Vector3Entity(Vector3 vector)
+    {
+        X = vector.x;
+        Y = vector.y;
+        Z = vector.z;
+    }
+
+    public Vector3 ToVector3()
+    {
+        return new Vector3(X, Y, Z);
     }
 }
