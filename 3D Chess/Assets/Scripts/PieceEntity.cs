@@ -11,12 +11,12 @@ public class PieceEntity : RealmObject
 
     public Vector3 Position
     {
-        get => positionEntity.ToVector3();
-        set => positionEntity = new Vector3Entity(value);
+        get => PositionEntity.ToVector3();
+        set => PositionEntity = new Vector3Entity(value);
     }
 
     private int Type { get; set; }
-    private Vector3Entity positionEntity { get; set; }
+    private Vector3Entity PositionEntity { get; set; }
 
     public PieceEntity(PieceType type, Vector3 position)
     {
@@ -24,32 +24,16 @@ public class PieceEntity : RealmObject
         Position = position;
     }
 
+    protected override void OnPropertyChanged(string propertyName)
+    {
+        if (propertyName == nameof(PositionEntity))
+        {
+            RaisePropertyChanged(nameof(Position));
+        }
+    }
+
     private PieceEntity()
     {
 
-    }
-}
-
-public class Vector3Entity : EmbeddedObject
-{
-    public float X { get; set; }
-    public float Y { get; set; }
-    public float Z { get; set; }
-
-    private Vector3Entity()
-    {
-
-    }
-
-    public Vector3Entity(Vector3 vector)
-    {
-        X = vector.x;
-        Y = vector.y;
-        Z = vector.z;
-    }
-
-    public Vector3 ToVector3()
-    {
-        return new Vector3(X, Y, Z);
     }
 }
