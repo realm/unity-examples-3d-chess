@@ -34,6 +34,5 @@ public class PieceEntity : RealmObject
 
     private PieceEntity()
     {
-
     }
 }
