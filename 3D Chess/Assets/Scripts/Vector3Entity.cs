@@ -1,7 +1,7 @@
 ﻿using Realms;
 using UnityEngine;
 
-// Every instance of a `Vector3Entity` represents exactly one `PieceEntity`.
+// Every instance of a `Vector3Entity` is owned by exactly one `PieceEntity`.
 // We can therefore use `EmbeddedObject` which is a special type of `RealmObject` enforcing this 1:1 relationship.
 public class Vector3Entity : EmbeddedObject
 {
