@@ -33,7 +33,7 @@ public class InputListener : MonoBehaviour
     {
         if (activePiece != null)
         {
-            gameState.MovePiece(activePiece, position);
+            gameState.MovePiece(activePiece.transform.position, position);
             activePiece.Deselect();
             activePiece = null;
         }

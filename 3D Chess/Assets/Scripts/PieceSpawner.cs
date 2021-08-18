@@ -1,5 +1,4 @@
 using Realms;
-using System.Linq;
 using UnityEngine;
 
 public class PieceSpawner : MonoBehaviour
@@ -18,77 +17,53 @@ public class PieceSpawner : MonoBehaviour
     [SerializeField] private Piece prefabWhiteQueen = default;
     [SerializeField] private Piece prefabWhiteRook = default;
 
-    public void LoadBoard(GameObject parent)
+    public void CreateNewBoard(Realm realm)
     {
-        var realm = Realm.GetInstance();
-        var pieceEntities = realm.All<PieceEntity>();
+        realm.Write(() =>
+        {
+            realm.RemoveAll<PieceEntity>();
 
-        // Check if we actually have PieceEntity's (which means we resume a game).
-        if (pieceEntities.Count() > 0)
-        {
-            // Each RealmObject needs a corresponding GameObject to represent it.
-            foreach (PieceEntity pieceEntity in pieceEntities)
-            {
-                PieceType type = pieceEntity.PieceType;
-                Vector3 position = pieceEntity.Position;
-                SpawnPiece(type, position, parent);
-            }
-        }
-        else
-        {
-            // No game was saved, create a new board.
-            CreateNewBoard(parent);
-        }
+            realm.Add(new PieceEntity(PieceType.WhiteRook, new Vector3(1, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteKnight, new Vector3(2, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteBishop, new Vector3(3, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteQueen, new Vector3(4, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteKing, new Vector3(5, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteBishop, new Vector3(6, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteKnight, new Vector3(7, 0, 1)));
+            realm.Add(new PieceEntity(PieceType.WhiteRook, new Vector3(8, 0, 1)));
+
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(1, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(2, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(3, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(4, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(5, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(6, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(7, 0, 2)));
+            realm.Add(new PieceEntity(PieceType.WhitePawn, new Vector3(8, 0, 2)));
+
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(1, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(2, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(3, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(4, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(5, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(6, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(7, 0, 7)));
+            realm.Add(new PieceEntity(PieceType.BlackPawn, new Vector3(8, 0, 7)));
+
+            realm.Add(new PieceEntity(PieceType.BlackRook, new Vector3(1, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackKnight, new Vector3(2, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackBishop, new Vector3(3, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackQueen, new Vector3(4, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackKing, new Vector3(5, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackBishop, new Vector3(6, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackKnight, new Vector3(7, 0, 8)));
+            realm.Add(new PieceEntity(PieceType.BlackRook, new Vector3(8, 0, 8)));
+        });
     }
 
-    public void CreateNewBoard(GameObject parent)
+    public void SpawnPiece(PieceEntity pieceEntity, GameObject parent)
     {
-        // First clear the board, then recreate it from scratch.
-        foreach (var piece in parent.GetComponentsInChildren<Piece>())
-        {
-            piece.RemoveFromBoard();
-        }
-
-        SpawnPiece(PieceType.WhiteRook, new Vector3(1, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteKnight, new Vector3(2, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteBishop, new Vector3(3, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteQueen, new Vector3(4, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteKing, new Vector3(5, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteBishop, new Vector3(6, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteKnight, new Vector3(7, 0, 1), parent);
-        SpawnPiece(PieceType.WhiteRook, new Vector3(8, 0, 1), parent);
-
-        SpawnPiece(PieceType.WhitePawn, new Vector3(1, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(2, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(3, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(4, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(5, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(6, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(7, 0, 2), parent);
-        SpawnPiece(PieceType.WhitePawn, new Vector3(8, 0, 2), parent);
-
-        SpawnPiece(PieceType.BlackPawn, new Vector3(1, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(2, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(3, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(4, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(5, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(6, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(7, 0, 7), parent);
-        SpawnPiece(PieceType.BlackPawn, new Vector3(8, 0, 7), parent);
-
-        SpawnPiece(PieceType.BlackRook, new Vector3(1, 0, 8), parent);
-        SpawnPiece(PieceType.BlackKnight, new Vector3(2, 0, 8), parent);
-        SpawnPiece(PieceType.BlackBishop, new Vector3(3, 0, 8), parent);
-        SpawnPiece(PieceType.BlackQueen, new Vector3(4, 0, 8), parent);
-        SpawnPiece(PieceType.BlackKing, new Vector3(5, 0, 8), parent);
-        SpawnPiece(PieceType.BlackBishop, new Vector3(6, 0, 8), parent);
-        SpawnPiece(PieceType.BlackKnight, new Vector3(7, 0, 8), parent);
-        SpawnPiece(PieceType.BlackRook, new Vector3(8, 0, 8), parent);
-    }
-
-    private void SpawnPiece(PieceType pieceType, Vector3 position, GameObject parent)
-    {
-        var piecePrefab = pieceType switch
+        var piecePrefab = pieceEntity.PieceType switch
         {
             PieceType.BlackBishop => prefabBlackBishop,
             PieceType.BlackKing => prefabBlackKing,
@@ -105,6 +80,7 @@ public class PieceSpawner : MonoBehaviour
             _ => throw new System.Exception("Invalid piece type.")
         };
 
-        Instantiate(piecePrefab, position, Quaternion.identity, parent.transform);
+        var piece = Instantiate(piecePrefab, pieceEntity.Position, Quaternion.identity, parent.transform);
+        piece.Entity = pieceEntity;
     }
 }

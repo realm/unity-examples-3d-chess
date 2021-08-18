@@ -1,17 +1,13 @@
-using Realms;
-using System.Linq;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
-    [SerializeField] private PieceType pieceType = default;
-
     private Events events = default;
+
     private readonly Color selectedColor = new Color(1, 0, 0, 1);
     private readonly Color deselectedColor = new Color(1, 1, 1, 1);
 
-    private Realm realm;
-    private PieceEntity pieceEntity;
+    public PieceEntity Entity { get; set; }
 
     public void Select()
     {
@@ -23,15 +19,6 @@ public class Piece : MonoBehaviour
         gameObject.GetComponent<Renderer>().material.color = deselectedColor;
     }
 
-    public void RemoveFromBoard()
-    {
-        realm.Write(() =>
-        {
-            realm.Remove(pieceEntity);
-        });
-        Destroy(gameObject);
-    }
-
     private void OnMouseDown()
     {
         events.PieceClickedEvent.Invoke(this);
@@ -40,41 +27,26 @@ public class Piece : MonoBehaviour
     private void Awake()
     {
         events = FindObjectOfType<Events>();
-        realm = Realm.GetInstance();
     }
 
     private void Start()
     {
-        var pieceEntities = realm.All<PieceEntity>();
-        if (pieceEntities.Count() > 0)
-        {
-            pieceEntity = pieceEntities
-                .Filter("positionEntity.X == $0 && positionEntity.Y == $1 && positionEntity.Z == $2",
-                        transform.position.x, transform.position.y, transform.position.z)
-                .FirstOrDefault();
-        }
-        if (pieceEntity == null)
-        {
-            pieceEntity = new PieceEntity(pieceType, transform.position);
-            realm.Write(() =>
-            {
-                realm.Add(pieceEntity);
-            });
-        }
+        Entity.PropertyChanged += OnPropertyChanged;
     }
 
-    private void Update()
+    private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (transform.hasChanged)
+        switch (e.PropertyName)
         {
-            if (pieceEntity != null)
-            {
-                realm.Write(() =>
+            case nameof(Entity.IsValid):
+                if (!Entity.IsValid)
                 {
-                    pieceEntity.Position = transform.position;
-                });
-            }
-            transform.hasChanged = false;
+                    Destroy(gameObject);
+                }
+                break;
+            case nameof(Entity.Position):
+                gameObject.transform.position = Entity.Position;
+                break;
         }
     }
 }
