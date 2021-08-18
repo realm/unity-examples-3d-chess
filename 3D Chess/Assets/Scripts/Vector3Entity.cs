@@ -9,7 +9,6 @@ public class Vector3Entity : EmbeddedObject
 
     private Vector3Entity()
     {
-
     }
 
     public Vector3Entity(Vector3 vector)
