@@ -39,7 +39,7 @@ public class Piece : MonoBehaviour
     {
         switch (e.PropertyName)
         {
-            // The `IsValid` property indicates if a `RealmObject` still exists. It only every changes once, from `true` to `false`
+            // The `IsValid` property indicates if a `RealmObject` still exists. It only ever changes once, from `true` to `false`
             // when a `RealmObject` (`Entity` in this case) is removed from it's Realm.
             case nameof(Entity.IsValid):
                 if (!Entity.IsValid)
