@@ -7,7 +7,7 @@ public class PieceEntity : RealmObject
     public PieceType PieceType
     {
         get => (PieceType)Type;
-        set => Type = (int)value;
+        private set => Type = (int)value;
     }
 
     // Custom types like `Vector3` need to be represented by a type that can be saved in Realm.
