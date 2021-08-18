@@ -18,8 +18,5 @@ public class Vector3Entity : EmbeddedObject
         Z = vector.z;
     }
 
-    public Vector3 ToVector3()
-    {
-        return new Vector3(X, Y, Z);
-    }
+    public Vector3 ToVector3() => new Vector3(X, Y, Z);
 }
