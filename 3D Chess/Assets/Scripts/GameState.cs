@@ -1,6 +1,8 @@
 using Realms;
+using Realms.Sync;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
@@ -34,9 +36,9 @@ public class GameState : MonoBehaviour
         pieceSpawner.CreateNewBoard(realm);
     }
 
-    private void Awake()
+    private async void Awake()
     {
-        realm = Realm.GetInstance();
+        realm = await CreateRealmAsync();
         pieceEntities = realm.All<PieceEntity>();
 
         // We use notifications here to achieve multiple things:
@@ -94,5 +96,21 @@ public class GameState : MonoBehaviour
                  .Filter("PositionEntity.X == $0 && PositionEntity.Y == $1 && PositionEntity.Z == $2",
                          position.x, position.y, position.z)
                  .FirstOrDefault();
+    }
+
+    private async Task<Realm> CreateRealmAsync()
+    {
+        var app = App.Create("3d_chess-sjdkk");
+
+        // For this example we can just create a new random user to play the game since all users access the same game.
+        // They have to be distinct though, so anonymous credentials are not an option.
+        var email = Guid.NewGuid().ToString();
+        var password = "password";
+        await app.EmailPasswordAuth.RegisterUserAsync(email, password);
+
+        var user = await app.LogInAsync(Credentials.EmailPassword(email, password));
+        var syncConfiguration = new SyncConfiguration("3d_chess_partition_key", user);
+
+        return await Realm.GetInstanceAsync(syncConfiguration);
     }
 }
