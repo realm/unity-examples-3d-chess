@@ -14,6 +14,8 @@ public class GameState : MonoBehaviour
     private IQueryable<PieceEntity> pieceEntities;
     private IDisposable notificationToken;
 
+    private string gameIdKey = "GAME_ID_KEY";
+
     public void MovePiece(Vector3 oldPosition, Vector3 newPosition)
     {
         realm.Write(() =>
@@ -109,7 +111,8 @@ public class GameState : MonoBehaviour
         await app.EmailPasswordAuth.RegisterUserAsync(email, password);
 
         var user = await app.LogInAsync(Credentials.EmailPassword(email, password));
-        var syncConfiguration = new SyncConfiguration("3d_chess_partition_key", user);
+        var partitionKey = PlayerPrefs.GetString(gameIdKey);
+        var syncConfiguration = new SyncConfiguration(partitionKey, user);
 
         return await Realm.GetInstanceAsync(syncConfiguration);
     }
