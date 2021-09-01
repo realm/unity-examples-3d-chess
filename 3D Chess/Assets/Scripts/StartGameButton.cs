@@ -6,7 +6,7 @@ public class StartGameButton : MonoBehaviour
 {
     [SerializeField] private InputField inputField = default;
 
-    private string gameIdKey = "GAME_ID_KEY";
+    private readonly string gameIdKey = "GAME_ID_KEY";
 
     public void StartGameButtonPressed()
     {

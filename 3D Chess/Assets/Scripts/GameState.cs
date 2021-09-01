@@ -9,12 +9,13 @@ public class GameState : MonoBehaviour
 {
     [SerializeField] private PieceSpawner pieceSpawner = default;
     [SerializeField] private GameObject pieces = default;
+    [SerializeField] private GameObject loadingIndicator = default;
 
     private Realm realm;
     private IQueryable<PieceEntity> pieceEntities;
     private IDisposable notificationToken;
 
-    private string gameIdKey = "GAME_ID_KEY";
+    private readonly string gameIdKey = "GAME_ID_KEY";
 
     public void MovePiece(Vector3 oldPosition, Vector3 newPosition)
     {
@@ -83,6 +84,8 @@ public class GameState : MonoBehaviour
                 pieceSpawner.SpawnPiece(pieceEntity, pieces);
             }
         });
+
+        Destroy(loadingIndicator.gameObject);
     }
 
     private void OnDestroy()
