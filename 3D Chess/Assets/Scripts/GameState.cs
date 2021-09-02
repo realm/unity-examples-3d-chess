@@ -1,5 +1,6 @@
 using Realms;
 using Realms.Sync;
+using Realms.Sync.Exceptions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,8 +15,6 @@ public class GameState : MonoBehaviour
     private Realm realm;
     private IQueryable<PieceEntity> pieceEntities;
     private IDisposable notificationToken;
-
-    private readonly string gameIdKey = "GAME_ID_KEY";
 
     public void MovePiece(Vector3 oldPosition, Vector3 newPosition)
     {
@@ -85,7 +84,7 @@ public class GameState : MonoBehaviour
             }
         });
 
-        Destroy(loadingIndicator.gameObject);
+        Destroy(loadingIndicator);
     }
 
     private void OnDestroy()
@@ -107,14 +106,26 @@ public class GameState : MonoBehaviour
     {
         var app = App.Create("3d_chess-sjdkk");
 
-        // For this example we can just create a new random user to play the game since all users access the same game.
-        // They have to be distinct though, so anonymous credentials are not an option.
-        var email = Guid.NewGuid().ToString();
-        var password = "password";
-        await app.EmailPasswordAuth.RegisterUserAsync(email, password);
+        // This example focuses on an introduction to Sync.
+        // We will keep the registration simple for now (by just using the email as password).
+        // In a different example we will focus on authentication methods, login dialogues, etc.
+        var email = PlayerPrefs.GetString(Constants.PlayerPrefsKeys.Name);
+        var password = "temporaryPassword";
+        try
+        {
+            await app.EmailPasswordAuth.RegisterUserAsync(email, password);
+        }
+        catch (AppException appException)
+        {
+            // If the user is already registered we can just log in. Any other exception needs to be thrown.
+            if (!appException.Message.Contains("AccountNameInUse"))
+            {
+                throw;
+            }
+        }
 
         var user = await app.LogInAsync(Credentials.EmailPassword(email, password));
-        var partitionKey = PlayerPrefs.GetString(gameIdKey);
+        var partitionKey = PlayerPrefs.GetString(Constants.PlayerPrefsKeys.GameId);
         var syncConfiguration = new SyncConfiguration(partitionKey, user);
 
         return await Realm.GetInstanceAsync(syncConfiguration);

@@ -4,14 +4,17 @@ using UnityEngine.UI;
 
 public class StartGameButton : MonoBehaviour
 {
-    [SerializeField] private InputField inputField = default;
-
-    private readonly string gameIdKey = "GAME_ID_KEY";
+    [SerializeField] private InputField nameInputField = default;
+    [SerializeField] private InputField gameIdInputField = default;
 
     public void StartGameButtonPressed()
     {
-        var gameId = inputField.text;
-        PlayerPrefs.SetString(gameIdKey, gameId);
+        var name = nameInputField.text;
+        PlayerPrefs.SetString(Constants.PlayerPrefsKeys.Name, name);
+
+        var gameId = gameIdInputField.text;
+        PlayerPrefs.SetString(Constants.PlayerPrefsKeys.GameId, gameId);
+
         SceneManager.LoadScene("MainScene");
     }
 }
