@@ -1,16 +1,12 @@
 using Realms;
-using Realms.Sync;
-using Realms.Sync.Exceptions;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameState : MonoBehaviour
 {
     [SerializeField] private PieceSpawner pieceSpawner = default;
     [SerializeField] private GameObject pieces = default;
-    [SerializeField] private GameObject loadingIndicator = default;
 
     private Realm realm;
     private IQueryable<PieceEntity> pieceEntities;
@@ -38,9 +34,9 @@ public class GameState : MonoBehaviour
         pieceSpawner.CreateNewBoard(realm);
     }
 
-    private async void Awake()
+    private void Awake()
     {
-        realm = await CreateRealmAsync();
+        realm = Realm.GetInstance();
         pieceEntities = realm.All<PieceEntity>();
 
         // We use notifications here to achieve multiple things:
@@ -83,8 +79,6 @@ public class GameState : MonoBehaviour
                 pieceSpawner.SpawnPiece(pieceEntity, pieces);
             }
         });
-
-        Destroy(loadingIndicator);
     }
 
     private void OnDestroy()
@@ -100,34 +94,5 @@ public class GameState : MonoBehaviour
                  .Filter("PositionEntity.X == $0 && PositionEntity.Y == $1 && PositionEntity.Z == $2",
                          position.x, position.y, position.z)
                  .FirstOrDefault();
-    }
-
-    private async Task<Realm> CreateRealmAsync()
-    {
-        var app = App.Create("3d_chess-sjdkk");
-
-        // This example focuses on an introduction to Sync.
-        // We will keep the registration simple for now (by just using the email as password).
-        // In a different example we will focus on authentication methods, login dialogues, etc.
-        var email = PlayerPrefs.GetString(Constants.PlayerPrefsKeys.Name);
-        var password = "temporaryPassword";
-        try
-        {
-            await app.EmailPasswordAuth.RegisterUserAsync(email, password);
-        }
-        catch (AppException appException)
-        {
-            // If the user is already registered we can just log in. Any other exception needs to be thrown.
-            if (!appException.Message.Contains("AccountNameInUse"))
-            {
-                throw;
-            }
-        }
-
-        var user = await app.LogInAsync(Credentials.EmailPassword(email, password));
-        var partitionKey = PlayerPrefs.GetString(Constants.PlayerPrefsKeys.GameId);
-        var syncConfiguration = new SyncConfiguration(partitionKey, user);
-
-        return await Realm.GetInstanceAsync(syncConfiguration);
     }
 }
