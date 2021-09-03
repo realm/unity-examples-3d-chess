@@ -2,39 +2,29 @@
 
 ## Introduction
 
-When creating a game with Unity we often reach the point where we need to save data that we need at a later point in time.
-
-This could be something simple like a table of high scores or a lot more complex like the state of the game that got paused and now needs to be resumed exactly the way the user left it when they quit it earlier.
-
-Maybe you have tried this before using `PlayerPrefs` but your data was too complex to save it in there. Or you have tried SQL only to find it to be very complicated and cumbersome to use.
+When creating a game with Unity we often reach the point where we need to save data that we need at a later point in time. This could be something simple like a table of high scores or a lot more complex like the state of the game that got paused and now needs to be resumed exactly the way the user left it when they quit it earlier. Maybe you have tried this before using `PlayerPrefs` but your data was too complex to save it in there. Or you have tried SQL only to find it to be very complicated and cumbersome to use.
 
 Realm can help you achieve this easily and quickly with just some minor adjustments to your code.
 
-The goal of this article is to show you how to add Realm to your Unity game and make sure your data is persisted.
+The goal of this article is to show you how to add Realm to your Unity game and make sure your data is persisted. The Realm Unity SDK is part of our [Realm .NET SDK](https://github.com/realm/realm-dotnet). The [documentation for the Realm .NET SDK](https://docs.mongodb.com/realm/sdk/dotnet) will help you get started easily.
 
-The Realm Unity SDK is part of our [Realm .NET SDK](https://github.com/realm/realm-dotnet).
-
-The [documentation for the Realm .NET SDK](https://docs.mongodb.com/realm/sdk/dotnet) will help you get started easily.
-
-The next section will describe the example itself. If you are already familiar with Unity or really just want to see Realm in action you can also skip this part and [jump straight to the second section](#add-realm).
+The first part of this tutorial will describe the example itself. If you are already familiar with Unity or really just want to see Realm in action you can also skip it and [jump straight to the second part](#add-realm).
 
 ## Example game
 
-We will be using a simple 3D chess game for demonstration purposes. Creating this game itself will not be part of this tutorial but if you want to follow along you can download it via [our Unity examples repository](https://github.com/realm/unity-examples-3d-chess/tree/example-template).
+We will be using a simple 3D chess game for demonstration purposes. Creating this game itself will not be part of this tutorial. However, this section will provide you with an overview so that you can the follow along in the section and add Realm to the game. This example can be found in [our Unity examples repository](https://github.com/realm/unity-examples-3d-chess/tree/example-template).
 
-If you just want to have a look at [the final result](https://github.com/realm/unity-examples-3d-chess/tree/local-realm), it can be found there as well.
-
-The Unity Editor version used for this example is `2021.1.13f1`.
+The [final implementation of the game]((https://github.com/realm/unity-examples-3d-chess/tree/local-realm)) including the usage of Realm is also part of the example repository.
 
 ![Chess Board](images/00_chess_board.png)
 
 To make it easy to find your way around this example, here are some notes to get you started:
 
-The interesting part in the `MainScene` is to look at is the `Board`  which is made up of `Squares` and `Pieces`. The `Squares` are just slightly scaled and colored default `Cube` objects which we utilize to visualize the `Board` but also detect clicks for moving `Pieces` by using it's already attached `Box Collider` component.
+The interesting part in the `MainScene` is to look at is the `Board` which is made up of `Squares` and `Pieces`. The `Squares` are just slightly scaled and colored default `Cube` objects which we utilize to visualize the `Board` but also detect clicks for moving `Pieces` by using it's already attached [`Box Collider`](https://docs.unity3d.com/Manual/class-BoxCollider.html) component.
 
 ![Square Game Object](images/01_square_game_object.jpg)
 
-Those `Pieces` have to be activated first though which happens by making them clickable as well. `Pieces` are not initially added to the `Board` but instead will be spawned by the `PieceSpawner`. You can find them in the `Prefabs` folder in the `Project` hierarchy.
+The `Pieces` have to be activated first which happens by making them clickable as well. `Pieces` are not initially added to the `Board` but instead will be spawned by the `PieceSpawner`. You can find them in the `Prefabs` folder in the `Project` hierarchy.
 
 ![Piece Prefab](images/02_piece_prefab.jpg)
 
