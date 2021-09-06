@@ -12,7 +12,7 @@ The first part of this tutorial will describe the example itself. If you are alr
 
 ## Example game
 
-We will be using a simple 3D chess game for demonstration purposes. Creating this game itself will not be part of this tutorial. However, this section will provide you with an overview so that you can the follow along in the section and add Realm to the game. This example can be found in [our Unity examples repository](https://github.com/realm/unity-examples-3d-chess/tree/example-template).
+We will be using a simple 3D chess game for demonstration purposes. Creating this game itself will not be part of this tutorial. However, this section will provide you with an overview so that you can follow along and add Realm to the game. This example can be found in [our Unity examples repository](https://github.com/realm/unity-examples-3d-chess/tree/example-template).
 
 The [final implementation of the game](https://github.com/realm/unity-examples-3d-chess/tree/local-realm) including the usage of Realm is also part of the example repository.
 
@@ -20,7 +20,7 @@ The [final implementation of the game](https://github.com/realm/unity-examples-3
 
 To make it easy to find your way around this example, here are some notes to get you started:
 
-The interesting part in the `MainScene` is to look at is the `Board` which is made up of `Squares` and `Pieces`. The `Squares` are just slightly scaled and colored default `Cube` objects which we utilize to visualize the `Board` but also detect clicks for moving `Pieces` by using it's already attached [`Box Collider`](https://docs.unity3d.com/Manual/class-BoxCollider.html) component.
+The interesting part in the `MainScene` to look at is the `Board` which is made up of `Squares` and `Pieces`. The `Squares` are just slightly scaled and colored default `Cube` objects which we utilize to visualize the `Board` but also detect clicks for moving `Pieces` by using it's already attached [`Box Collider`](https://docs.unity3d.com/Manual/class-BoxCollider.html) component.
 
 ![Square Game Object](images/01_square_game_object.jpg)
 
@@ -519,7 +519,7 @@ Note that collections are live objects. Meaning they will only be evaluated when
 
 Apart from an error object that we need to check (4) we also receive the `changes` and the `sender` (the updated collection itself) with every notification. For every new collection of objects an initial notification is sent that does not include any `changes` but gives us the opportunity to do some initial setup work (5).
 
-In case we resume a game, we'll already see `PieceEntity` objects in the database even for the initial notification. We not need to spawn one `Piece` per `PieceEntity` to represent it (6). We make use of the `SpawnPiece` function in `PieceSpawner` to achieve this. In case the database does not have any objects yet, we need to create the board from scratch (7). Here we use the `CreateNewBoard` function we added earlier to the `PieceSpawner`.
+In case we resume a game, we'll already see `PieceEntity` objects in the database even for the initial notification. We need to spawn one `Piece` per `PieceEntity` to represent it (6). We make use of the `SpawnPiece` function in `PieceSpawner` to achieve this. In case the database does not have any objects yet, we need to create the board from scratch (7). Here we use the `CreateNewBoard` function we added earlier to the `PieceSpawner`.
 
 On top of the initial notification we also expect to receive a notification every time a `PieceEntity` is inserted into the Realm. This is where we continue the `CreateNewBoard` functionality we started in the `PieceSpawner` by adding new objects to the database. After those changes happened we end up with `changes` (8) inside the notifications. Now we need to iterate over all new `PieceEntity` objects in the `sender` (which represents the `pieceEntities` collection) and add a `Piece` for each new `PieceEntity` to the board.
 
@@ -601,7 +601,7 @@ The steps we needed to take:
 - CRUD operations (need to use a `write` transaction):
   - Use `realm.Add()` to `Create` a new object.
   - Use `realm.Remove()` to `Delete` an object.
-  - `Read` and `Update` can be achieved by simple `getting` and `setting` the `public fields`.
+  - `Read` and `Update` can be achieved by simply `getting` and `setting` the `public fields`.
 
 With this you should be ready to use Realm in your games.
 
