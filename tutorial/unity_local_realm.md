@@ -249,84 +249,136 @@ When you switch back to Unity it will reload the dependencies. If you then open 
 
 We can now start using Realm in our Unity project.
 
+## Top-down or bottom-up?
+
+Before we actually start adding Realm to our code we need to think about how we want to achieve this and how the UI and database will interact with each other.
+
+There are basically two options we can choose from: top-down or bottom-up.
+
+The top-down approach would be to have the UI drive the changes. The `Piece` would know about it's database object and whenever a `Piece` is moved it would also update the database with it's new position.
+
+The preferred approach would be bottom-up though. Changes will be applied to the Realm and it will then take care of whatever implications this has on the UI by sending notifications.
+
+Let's first look into the initial setup of the board.
+
 ## Setting up the board
 
-The first thing we want to do is to define a Realm representation of our Piece since we cannot save the `PieceType` and the `Transform.Position` (which is a `Vector3`) directly in Realm.
+The first thing we want to do is to define a Realm representation of our Piece since we cannot save the `MonoBehaviour` directly in Realm. Classes that are supposed to be saved in Realm need to subclass `RealmObject`. The class `PieceEntity` will represent such an object. Note that we can not just duplicate the types from `Piece` since [not all of them can be saved in Realm](https://docs.mongodb.com/realm/sdk/dotnet/data-types/field-types/), like `Vector3` and `enum`.
 
-Add the following script to the project:
-
-```c#
-using Realms; // 1
-using UnityEngine;
-
-public class PieceEntity : RealmObject // 2
-{
-    public int Type { get; set; } // 3
-
-    // 4
-    public float PositionX { get; set; }
-    public float PositionY { get; set; }
-    public float PositionZ { get; set; }
-    
-    // 5
-    public PieceEntity()
-    {
-    
-    }
-    
-    // 6
-    public PieceEntity(PieceType type, Vector3 position)
-    {
-        // 7
-        Type = (int)type;
-        PositionX = position.x;
-        PositionY = position.y;
-        PositionZ = position.z;
-    }
-    
-    // 8
-    public Vector3 GetPosition()
-    {
-        return new Vector3(PositionX, PositionY, PositionZ);
-    }
-    
-    // 9
-    public void SetPosition(Vector3 position)
-    {
-        PositionX = position.x;
-        PositionY = position.y;
-        PositionZ = position.z;
-    }
-
-}
-```
-
-The first thing you'll notice is that we need to import the framework itself by calling `using Realms;` (1).
-
-The way `Realm` knows which classes are representations of database tables is by deriving them from `RealmObject` (2).
-
-We then define our fields, which need to be `primitive values`, in this case of type `int` for `Type` (3) and `float` for the three axis of the `Transform.Position` (4).
-
-A constructor without any arguments is mandatory (5), we also add a convenience constructor (6) that takes a `PieceType` and a `Vector3` and takes care of the initialization of our four fields in this class (7).
-
-Two more convenience functions, `GetPosition()` (8) and `SetPosition()` (9), will make the access and assignment of the position easier later.
-
-The next step is to add some way to actually add `Pieces` to the `Realm`. The current database state will always represent the current state of the board. When we create a new `Piece`, for example when setting up the board, the entity for it will be created. If a `Piece` gets moved, the entity will be updated. If it gets destroyed, the corresponding entry gets deleted from the database table.
-
-First, we will need to set up the board. The separate this from the `GameState` we create a new class that will take care of it:
+Add the following scripts to the project:
 
 ```c#
-using System.Linq;
 using Realms;
 using UnityEngine;
 
-class Persistence
+public class PieceEntity : RealmObject
 {
-    public static IQueryable<PieceEntity> ResetDatabase(Realm realm)
+    // 1
+    public PieceType PieceType
     {
-        realm.Write(() => // 3
+        get => (PieceType)Type;
+        private set => Type = (int)value;
+    }
+
+    // 2
+    public Vector3 Position
+    {
+        get => PositionEntity.ToVector3();
+        set => PositionEntity = new Vector3Entity(value);
+    }
+
+    // 3
+    private int Type { get; set; }
+    private Vector3Entity PositionEntity { get; set; }
+
+    // 4
+    public PieceEntity(PieceType type, Vector3 position)
+    {
+        PieceType = type;
+        Position = position;
+    }
+
+    // 5
+    protected override void OnPropertyChanged(string propertyName)
+    {
+        if (propertyName == nameof(PositionEntity))
         {
-            realm.RemoveAll<PieceEntity>(); // 1
+            RaisePropertyChanged(nameof(Position));
+        }
+    }
+
+    // 6
+    private PieceEntity()
+    {
+    }
+}
+```
+
+```c#
+using Realms;
+using UnityEngine;
+
+public class Vector3Entity : EmbeddedObject // 7
+{
+    public float X { get; private set; }
+    public float Y { get; private set; }
+    public float Z { get; private set; }
+
+    public Vector3Entity(Vector3 vector) // 8
+    {
+        X = vector.x;
+        Y = vector.y;
+        Z = vector.z;
+    }
+
+    public Vector3 ToVector3() => new Vector3(X, Y, Z); // 9
+
+    private Vector3Entity() // 10
+    {
+    }
+}
+```
+
+Even though we cannot save the `PieceType` (1) and the position (2) directly in the Realm, we can still expose them using backing variables (3) to make working with this class easier while still fulfilling the requirements for saving data in Realm.
+
+Additionally we provide a convenience constructor (4) for setting those two properties. A default constructor (6) also has to be provided for every `RealmObject`. Since we are not going to use it here though we can set it to `private`.
+
+Note that one of these backing variables is a `RealmObject` itself, or rather a sub class of it: `EmbeddedObject` (7). By extracting the position to a separate class `Vector3Entity` the `PieceEntity` is more readable. Another plus is that we can use the `EmbeddedObject` to represent a 1:1 relationship. Every `PieceEntity` can only have one `Vector3Entity` and even more importantly, ever `Vector3Entity` can only belong to one `PieceEntity` because there can only every be one `Piece` on any given `Square`.
+
+The `Vector3Entity`, like the `PieceEntity`, has some convenience functionality like a constructor that takes a `Vector3` (8), the `ToVector3()` function (9) and the private, mandatory default constructor (10) like `PieceEntity`.
+
+Looking back at the `PieceEntity` you will notice one more function: `OnPropertyChanged` (5). Realm sends notifications for changes to fields saved in the database. Since we expose those fields using `PieceType` and `Position` we need to make sure those notifications are passed on. This is achieved by calling `RaisePropertyChanged(nameof(Position));` whenever `PositionEntity` changes.
+
+The next step is to add some way to actually add `Pieces` to the `Realm`. The current database state will always represent the current state of the board. When we create a new `PieceEntity`, for example when setting up the board, the `GameObject` for it (`Piece`) will be created. If a `Piece` gets moved, the `PieceEntity` will be updated by the `GameState` which then leads to the `Piece`'s `GameObject` being updated using above mentioned notifications.
+
+First, we will need to set up the board. To achieve this using the bottom-up approach we adjust the `PieceSpawner` as follows:
+
+```c#
+using Realms;
+using UnityEngine;
+
+public class PieceSpawner : MonoBehaviour
+{
+    [SerializeField] private Piece prefabBlackBishop = default;
+    [SerializeField] private Piece prefabBlackKing = default;
+    [SerializeField] private Piece prefabBlackKnight = default;
+    [SerializeField] private Piece prefabBlackPawn = default;
+    [SerializeField] private Piece prefabBlackQueen = default;
+    [SerializeField] private Piece prefabBlackRook = default;
+
+    [SerializeField] private Piece prefabWhiteBishop = default;
+    [SerializeField] private Piece prefabWhiteKing = default;
+    [SerializeField] private Piece prefabWhiteKnight = default;
+    [SerializeField] private Piece prefabWhitePawn = default;
+    [SerializeField] private Piece prefabWhiteQueen = default;
+    [SerializeField] private Piece prefabWhiteRook = default;
+
+    public void CreateNewBoard(Realm realm)
+    {
+        realm.Write(() =>
+        {
+            // 1
+            realm.RemoveAll<PieceEntity>();
 
             // 2
             realm.Add(new PieceEntity(PieceType.WhiteRook, new Vector3(1, 0, 1)));
@@ -365,155 +417,170 @@ class Persistence
             realm.Add(new PieceEntity(PieceType.BlackKnight, new Vector3(7, 0, 8)));
             realm.Add(new PieceEntity(PieceType.BlackRook, new Vector3(8, 0, 8)));
         });
+    }
 
-        return realm.All<PieceEntity>(); // 4
+    public void SpawnPiece(PieceEntity pieceEntity, GameObject parent)
+    {
+        var piecePrefab = pieceEntity.PieceType switch
+        {
+            PieceType.BlackBishop => prefabBlackBishop,
+            PieceType.BlackKing => prefabBlackKing,
+            PieceType.BlackKnight => prefabBlackKnight,
+            PieceType.BlackPawn => prefabBlackPawn,
+            PieceType.BlackQueen => prefabBlackQueen,
+            PieceType.BlackRook => prefabBlackRook,
+            PieceType.WhiteBishop => prefabWhiteBishop,
+            PieceType.WhiteKing => prefabWhiteKing,
+            PieceType.WhiteKnight => prefabWhiteKnight,
+            PieceType.WhitePawn => prefabWhitePawn,
+            PieceType.WhiteQueen => prefabWhiteQueen,
+            PieceType.WhiteRook => prefabWhiteRook,
+            _ => throw new System.Exception("Invalid piece type.")
+        };
+
+        var piece = Instantiate(piecePrefab, pieceEntity.Position, Quaternion.identity, parent.transform);
+        piece.Entity = pieceEntity;
     }
 }
-
 ```
 
-This `ResetDatabase()` functionality can be used to initially set up the board on the first launch and also later when the user clicks the reset button. 
+The important change here is `CreateNewBoard`. Instead of spawning the `Piece`s we now add `PieceEntity` objects to the Realm. When we look at the changes in `GameState` we will see how this actually creates a `Piece` per `PieceEntity`.
 
-First remove all remaining objects from the `Realm` by calling `realm.RemoveAll<PieceEntity>()` (1), then we set up the initial state of a chess game via `realm.Add()` (2) where we pass in one newly created `PieceEntity` per call.
+Here we just wipe the database (1) and then add new `PieceEntity` objects (2). Note that this is wrapped by a `realm.write` block. Whenever we want to change the database we need to enclose it in a write transaction. This makes sure that no other piece of code can change the database at the same time since transactions block each other.
 
-Notice that both these functions are called within a `realm.Write()` (3) statement which signals the `Realm` that data is about the be changed. Multiple `realm.Write()` calls block each other and therefore make sure that no two threads can change data at the same time which could lead to data corruption.
+The last step to create a new board is to update the `GameState` to make use of the new `PieceSpawner` and the `PieceEntity` that we just created.
 
-When the set up is complete we return the collection of all those objects which is represented by `realm.All<PieceEntity>()` (4).
-
-The last step to create a new board is to update the `GameState` to make use of the `Persistance` and the `PieceEntity` that we just created.
-
-First we also need to import Realm here as well:
+We'll go through these changes step by step. First we also need to import Realm here as well:
 
 ```c#
 using Realms;
 ```
 
-Then we add a private field to save our `Realm` instance to avoid creating it over and over again. We also create another private field to save the collection of pieces that are on the board:
+Then we add a private field to save our `Realm` instance to avoid creating it over and over again. We also create another private field to save the collection of pieces that are on the board and a notification token which we need for above mentioned notifications:
 
 ```c#
-private Realm realm = default;
-private IQueryable<PieceEntity> pieceEntities = default;
+private Realm realm;
+private IQueryable<PieceEntity> pieceEntities;
+private IDisposable notificationToken;
 ```
 
-In `Awake` we do need to get access to the `Realm`. This is achieves by opening an instance of it (1) and then asking it for all `PieceEntity` objects currently saved using `realm.All` (2) and assigning them to our `pieceEntities` field.
-
-Finally we check if objects already existed (3) and if not, we need to initialize the `Realm` by calling the just created `ResetDatabase()` (4). We will end up with a state where we either set up a new board or load the game state from the `Realm`.
-
-Either way, it's now time to actually spawn the `GameObject`s that will represent the `PieceEntity` objects in our `Realm`. This will be achieved by calling `CreateDatabase()` as the last action in `Awake` (5).
+In `Awake` we do need to get access to the `Realm`. This is achieved by opening an instance of it (1) and then asking it for all `PieceEntity` objects currently saved using `realm.All` (2) and assigning them to our `pieceEntities` field:
 
 ```c#
 private void Awake()
-{
-	realm = Realm.GetInstance(); // 1
-    pieceEntities = realm.All<PieceEntity>(); // 2
-
-    // Check if we already have PieceEntity's (which means we resume a game).
-    if (pieceEntities.Count() == 0) // 3
     {
-    	// No game was saved, create the necessary RealmObjects.
-        pieceEntities = Persistence.ResetDatabase(realm); // 4
-	}
-    CreateGameObjects(); // 5
-}
+        realm = Realm.GetInstance(); // 1
+        pieceEntities = realm.All<PieceEntity>(); // 2
+
+        // 3
+        notificationToken = pieceEntities.SubscribeForNotifications((sender, changes, error) =>
+        {
+            // 4
+            if (error != null)
+            {
+                Debug.Log(error.ToString());
+                return;
+            }
+
+            // 5
+            // Initial notification
+            if (changes == null)
+            {
+                // Check if we actually have `PieceEntity` objects in our Realm (which means we resume a game).
+                if (sender.Count > 0)
+                {
+                    // 6
+                    // Each `RealmObject` needs a corresponding `GameObject` to represent it.
+                    foreach (PieceEntity pieceEntity in sender)
+                    {
+                        pieceSpawner.SpawnPiece(pieceEntity, pieces);
+                    }
+                }
+                else
+                {
+                    // 7
+                    // No game was saved, create a new board.
+                    pieceSpawner.CreateNewBoard(realm);
+                }
+                return;
+            }
+
+            // 8
+            foreach (var index in changes.InsertedIndices)
+            {
+                var pieceEntity = sender[index];
+                pieceSpawner.SpawnPiece(pieceEntity, pieces);
+            }
+        });
+    }
 ```
 
-When creating the `GameObject`s for our `Realm` objects we just need to iterate (1) over the `pieceEntities` and create a new `Piece` for each of them by calling the `pieceSpawner` (2):
+Note that collections are live objects. Meaning they will only be evaluated when we need them (i.e. when we access them) and they will always be re-evaluated in case they change. We also get notifications for those changes if we subscribed to them. This can be done by calling `SubscribeForNotifications` on a collection (3).
 
-```c#
-private void CreateGameObjects()
-{
-	// Each RealmObject needs a corresponding GameObject to represent it.
-	foreach (PieceEntity pieceEntity in pieceEntities) // 1
-	{
-		PieceType type = (PieceType)pieceEntity.Type;
-        Vector3 position = pieceEntity.GetPosition();
-        pieceSpawner.SpawnPiece(type, position, pieces, pieceMovement); // 2
-	}
-}
-```
+Apart from an error object that we need to check (4) we also receive the `changes` and the `sender` (the updated collection itself) with every notification. For every new collection of objects an initial notification is sent that does not include any `changes` but gives us the opportunity to do some initial setup work (5).
 
-Our game now resumes exactly where we stopped it and sets up the board accordingly.
+In case we resume a game, we'll already see `PieceEntity` objects in the database even for the initial notification. We not need to spawn one `Piece` per `PieceEntity` to represent it (6). We make use of the `SpawnPiece` function in `PieceSpawner` to achieve this. In case the database does not have any objects yet, we need to create the board from scratch (7). Here we use the `CreateNewBoard` function we added earlier to the `PieceSpawner`.
 
-However, when you stop and start the game again, you'll notice that the board will be reset to it's initial setup no matter where the pieces where positioned when you stopped it.
+On top of the initial notification we also expect to receive a notification every time a `PieceEntity` is inserted into the Realm. This is where we continue the `CreateNewBoard` functionality we started in the `PieceSpawner` by adding new objects to the database. After those changes happened we end up with `changes` (8) inside the notifications. Now we need to iterate over all new `PieceEntity` objects in the `sender` (which represents the `pieceEntities` collection) and add a `Piece` for each new `PieceEntity` to the board.
 
-This is because we haven't saved our moves to the database yet which will be part of the next section.
+Apart from inserting new pieces when the board gets set up we also need to take care of movement and pieces attacking each other. This will be explained in the next section.
 
 ## Updating the position of a PieceEntity
 
-When moving a piece we need to adjust `UpdatePieceToPosition()` in `GameState` to not only update the scene but also the database:
+Whenever we receive a click on a `Square` and therefore call `MovePiece` in `GameState` we now need to update the `PieceEntity` instead of directly moving the corresponding `GameObject`. The movement of the `Piece` will then happen via the `PropertyChanged` notifications as we've seen earlier.
 
 ```c#
-public void UpdatePieceToPosition(Piece movedPiece, Vector3 newPosition)
-{
-    // Check if there is already a piece at the new position and if so, destroy it.
-    var attackedPiece = FindPieceAtPosition(newPosition);
-    if (attackedPiece != null)
+public void MovePiece(Vector3 oldPosition, Vector3 newPosition)
     {
-        var attackedPieceEntity = FindPieceEntityAtPosition(newPosition); // 1
-        realm.Write(() => // 3
+        realm.Write(() =>
         {
-            realm.Remove(attackedPieceEntity); // 2
+            // 1
+            var attackedPiece = FindPieceEntity(newPosition);
+            if (attackedPiece != null)
+            {
+                realm.Remove(attackedPiece);
+            }
+
+            // 2
+            var movedPieceEntity = FindPieceEntity(oldPosition);
+            movedPieceEntity.Position = newPosition;
         });
-        Destroy(attackedPiece.gameObject);
     }
 
-    // Update the movedPiece's RealmObject.
-    var oldPosition = movedPiece.transform.position;
-    var movedPieceEntity = FindPieceEntityAtPosition(oldPosition); // 4
-    realm.Write(() =>
+    // 3
+    private PieceEntity FindPieceEntity(Vector3 position)
     {
-        movedPieceEntity.SetPosition(newPosition); // 5
-    });
-
-    // Update the movedPiece's GameObject.
-    movedPiece.transform.position = newPosition;
-}
+        return pieceEntities
+                 .Filter("PositionEntity.X == $0 && PositionEntity.Y == $1 && PositionEntity.Z == $2",
+                         position.x, position.y, position.z)
+                 .FirstOrDefault();
+    }
 ```
 
-If there is an `attackedPiece` at the target position we need to delete the corresponding `Realm` entity for this `GameObject`. First we need to find the entity (1) and then delete it (2). Note that this is again a database change that needs to be wrapped in a write statement (3).
+Before actually moving the `PieceEntity` we do need to check if there is already a `PieceEntity` at the desired position and if so, destroy it. To find a `PieceEntity` at the `newPosition` and also to find the `PieceEntity` that needs to be moved from `oldPosition` to `newPosition` we can use queries on the `pieceEntities` collection (3).
 
-After the `attackedPiece` was updated we can then also update the `movedPiece`. Again, we first need to find the corresponding `PieceEntity` for this `GameObject` (4) and then set the new position (5).
+By querying the collection (calling `Filter`) we can look for one or multiple `RealmObject`s with specific characteristics. In this case we're interested in the `RealmObject` that represents the `Piece` we are looking for. Note that when using a `Filter` we can only filter using the Realm properties saved in the database, not the exposed properties (`Position` and `PieceType`) exposed for convenience by the `PieceEntity`.
 
-In both cases the look up for `Realm` entities was done via the following function:
+If there is an `attackedPiece` at the target position we need to delete the corresponding `PieceEntity` for this `GameObject` (1). After the `attackedPiece` was updated we can then also update the `movedPiece` (2).
 
-```c#
-private PieceEntity FindPieceEntityAtPosition(Vector3 position)
-{
-    return pieceEntities.FirstOrDefault(piece => // 1
-                        piece.PositionX == position.x &&
-                        piece.PositionY == position.y &&
-                        piece.PositionZ == position.z);
-}
-```
-
-Whenever you need to search through a `Collection` of `RealmObject`s (which is an `IQueryable<PieceEntity>`) you can use `LINQ` on this `Collection`. By calling `FirstOrDefault` (1) and comparing the position, we retrieve the `RealmObject` for the `GameObject` in question.
+Like the initial setup of the board, this has to be called within a write transaction to make sure no other code is changing the database at the same time.
 
 This is all we had to do to update and persist the position. Go ahead and start the game. Stop and start it again and you should now see the state being persisted.
 
 ## Resetting the board
 
-The final step will be to also update our `ResetGame` button so update the `Realm`. At the moment it does not update the state in the database and just calls the `CreateGameObjects` function that `PieceSpawner` provides.
+The final step will be to also update our `ResetGame` button to update (or rather: wipe) the `Realm`. At the moment it does not update the state in the database and just re-creates the `GameObject`s.
 
-Resetting works similar to what we do in `Awake`. After removing all `GameObject`s from the scene we also need to delete the `Realm` entities (1) and then call `CreateGameObjects()` (1) to set up the board again:
+Resetting works similar to what we do in `Awake` in case there were no entries in the database, for example when starting the game for the first time.
+
+We can re-use the `CreateNewBoard` functionality here since it includes wiping the database before actually re-creating it:
 
 ```c#
 public void ResetGame()
-{
-    // Destroy all GameObjects.
-    foreach (Piece piece in pieces.GetComponentsInChildren<Piece>())
     {
-        Destroy(piece.gameObject);
+        pieceSpawner.CreateNewBoard(realm);
     }
-
-    // Re-create all RealmObjects with their initial position.
-    pieceEntities = Persistence.ResetDatabase(realm); // 1
-
-    // Recreate the GameObjects.
-    CreateGameObjects(); // 2
-}
 ```
-
-After this change we can delete the `CreateGameObjects()` function from `PieceSpawner` since it is no longer needed and substituted by the same function in `GameState`.
 
 With this change our game is finished and fully functional using a local `Realm` to save the game's state.
 
@@ -525,13 +592,13 @@ The steps we needed to take:
 
 - Add `Realm` via NPM as a dependency.
 - Import `Realm` in any class that wants to use it by calling `using Realms;`.
-- Create a new `Realm` instance via `Realm.GetInstance() to get access to the database.
-- Define entites by subclassing `RealmObject`:
+- Create a new `Realm` instance via `Realm.GetInstance()` to get access to the database.
+- Define entites by subclassing `RealmObject` (or any of it's sub classes):
   - Fields need to be public and primitive values or lists.
   - A default constructor is mandatory.
   - A convenience constructor and additional functions can be defined.
 - Write to a `Realm` using `realm.Write()` to avoid data corruption.
-- CRUD operations:
+- CRUD operations (need to use a `write` transaction):
   - Use `realm.Add()` to `Create` a new object.
   - Use `realm.Remove()` to `Delete` an object.
   - `Read` and `Update` can be achieved by simple `getting` and `setting` the `public fields`.
