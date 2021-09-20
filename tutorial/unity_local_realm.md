@@ -468,51 +468,51 @@ In `Awake` we do need to get access to the `Realm`. This is achieved by opening 
 
 ```c#
 private void Awake()
+{
+    realm = Realm.GetInstance(); // 1
+    pieceEntities = realm.All<PieceEntity>(); // 2
+
+    // 3
+    notificationToken = pieceEntities.SubscribeForNotifications((sender, changes, error) =>
     {
-        realm = Realm.GetInstance(); // 1
-        pieceEntities = realm.All<PieceEntity>(); // 2
-
-        // 3
-        notificationToken = pieceEntities.SubscribeForNotifications((sender, changes, error) =>
+        // 4
+        if (error != null)
         {
-            // 4
-            if (error != null)
-            {
-                Debug.Log(error.ToString());
-                return;
-            }
+            Debug.Log(error.ToString());
+            return;
+        }
 
-            // 5
-            // Initial notification
-            if (changes == null)
+        // 5
+        // Initial notification
+        if (changes == null)
+        {
+            // Check if we actually have `PieceEntity` objects in our Realm (which means we resume a game).
+            if (sender.Count > 0)
             {
-                // Check if we actually have `PieceEntity` objects in our Realm (which means we resume a game).
-                if (sender.Count > 0)
+                // 6
+                // Each `RealmObject` needs a corresponding `GameObject` to represent it.
+                foreach (PieceEntity pieceEntity in sender)
                 {
-                    // 6
-                    // Each `RealmObject` needs a corresponding `GameObject` to represent it.
-                    foreach (PieceEntity pieceEntity in sender)
-                    {
-                        pieceSpawner.SpawnPiece(pieceEntity, pieces);
-                    }
+                    pieceSpawner.SpawnPiece(pieceEntity, pieces);
                 }
-                else
-                {
-                    // 7
-                    // No game was saved, create a new board.
-                    pieceSpawner.CreateNewBoard(realm);
-                }
-                return;
             }
+            else
+            {
+                // 7
+                // No game was saved, create a new board.
+                pieceSpawner.CreateNewBoard(realm);
+            }
+            return;
+        }
 
-            // 8
-            foreach (var index in changes.InsertedIndices)
-            {
-                var pieceEntity = sender[index];
-                pieceSpawner.SpawnPiece(pieceEntity, pieces);
-            }
-        });
-    }
+        // 8
+        foreach (var index in changes.InsertedIndices)
+        {
+            var pieceEntity = sender[index];
+            pieceSpawner.SpawnPiece(pieceEntity, pieces);
+        }
+    });
+}
 ```
 
 Note that collections are live objects. Meaning they will only be evaluated when we need them (i.e. when we access them) and they will always be re-evaluated in case they change. We also get notifications for those changes if we subscribed to them. This can be done by calling `SubscribeForNotifications` on a collection (3).
