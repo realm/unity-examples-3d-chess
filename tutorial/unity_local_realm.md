@@ -263,7 +263,7 @@ Let's first look into the initial setup of the board.
 
 ## Setting up the board
 
-The first thing we want to do is to define a Realm representation of our Piece since we cannot save the `MonoBehaviour` directly in Realm. Classes that are supposed to be saved in Realm need to subclass `RealmObject`. The class `PieceEntity` will represent such an object. Note that we can not just duplicate the types from `Piece` since [not all of them can be saved in Realm](https://docs.mongodb.com/realm/sdk/dotnet/data-types/field-types/), like `Vector3` and `enum`.
+The first thing we want to do is to define a Realm representation of our Piece since we cannot save the `MonoBehaviour` directly in Realm. Classes that are supposed to be saved in Realm need to subclass `RealmObject`. The class `PieceEntity` will represent such an object. Note that we cannot just duplicate the types from `Piece` since [not all of them can be saved in Realm](https://docs.mongodb.com/realm/sdk/dotnet/data-types/field-types/), like `Vector3` and `enum`.
 
 Add the following scripts to the project:
 
@@ -343,7 +343,7 @@ Even though we cannot save the `PieceType` (1) and the position (2) directly in 
 
 Additionally we provide a convenience constructor (4) for setting those two properties. A default constructor (6) also has to be provided for every `RealmObject`. Since we are not going to use it here though we can set it to `private`.
 
-Note that one of these backing variables is a `RealmObject` itself, or rather a sub class of it: `EmbeddedObject` (7). By extracting the position to a separate class `Vector3Entity` the `PieceEntity` is more readable. Another plus is that we can use the `EmbeddedObject` to represent a 1:1 relationship. Every `PieceEntity` can only have one `Vector3Entity` and even more importantly, every `Vector3Entity` can only belong to one `PieceEntity` because there can only every be one `Piece` on any given `Square`.
+Note that one of these backing variables is a `RealmObject` itself, or rather a sub class of it: `EmbeddedObject` (7). By extracting the position to a separate class `Vector3Entity` the `PieceEntity` is more readable. Another plus is that we can use the `EmbeddedObject` to represent a 1:1 relationship. Every `PieceEntity` can only have one `Vector3Entity` and even more importantly, ever `Vector3Entity` can only belong to one `PieceEntity` because there can only every be one `Piece` on any given `Square`.
 
 The `Vector3Entity`, like the `PieceEntity`, has some convenience functionality like a constructor that takes a `Vector3` (8), the `ToVector3()` function (9) and the private, mandatory default constructor (10) like `PieceEntity`.
 
