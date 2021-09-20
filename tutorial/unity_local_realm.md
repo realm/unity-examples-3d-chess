@@ -531,30 +531,30 @@ Whenever we receive a click on a `Square` and therefore call `MovePiece` in `Gam
 
 ```c#
 public void MovePiece(Vector3 oldPosition, Vector3 newPosition)
+{
+    realm.Write(() =>
     {
-        realm.Write(() =>
+        // 1
+        var attackedPiece = FindPieceEntity(newPosition);
+        if (attackedPiece != null)
         {
-            // 1
-            var attackedPiece = FindPieceEntity(newPosition);
-            if (attackedPiece != null)
-            {
-                realm.Remove(attackedPiece);
-            }
+            realm.Remove(attackedPiece);
+        }
 
-            // 2
-            var movedPieceEntity = FindPieceEntity(oldPosition);
-            movedPieceEntity.Position = newPosition;
-        });
-    }
+        // 2
+        var movedPieceEntity = FindPieceEntity(oldPosition);
+        movedPieceEntity.Position = newPosition;
+    });
+}
 
-    // 3
-    private PieceEntity FindPieceEntity(Vector3 position)
-    {
-        return pieceEntities
-                 .Filter("PositionEntity.X == $0 && PositionEntity.Y == $1 && PositionEntity.Z == $2",
-                         position.x, position.y, position.z)
-                 .FirstOrDefault();
-    }
+// 3
+private PieceEntity FindPieceEntity(Vector3 position)
+{
+    return pieceEntities
+             .Filter("PositionEntity.X == $0 && PositionEntity.Y == $1 && PositionEntity.Z == $2",
+                     position.x, position.y, position.z)
+             .FirstOrDefault();
+}
 ```
 
 Before actually moving the `PieceEntity` we do need to check if there is already a `PieceEntity` at the desired position and if so, destroy it. To find a `PieceEntity` at the `newPosition` and also to find the `PieceEntity` that needs to be moved from `oldPosition` to `newPosition` we can use queries on the `pieceEntities` collection (3).
