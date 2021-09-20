@@ -577,9 +577,9 @@ We can re-use the `CreateNewBoard` functionality here since it includes wiping t
 
 ```c#
 public void ResetGame()
-    {
-        pieceSpawner.CreateNewBoard(realm);
-    }
+{
+    pieceSpawner.CreateNewBoard(realm);
+}
 ```
 
 With this change our game is finished and fully functional using a local `Realm` to save the game's state.
