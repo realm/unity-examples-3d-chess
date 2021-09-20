@@ -515,7 +515,7 @@ private void Awake()
 }
 ```
 
-Note that collections are live objects. Meaning they will only be evaluated when we need them (i.e. when we access them) and they will always be re-evaluated in case they change. We also get notifications for those changes if we subscribed to them. This can be done by calling `SubscribeForNotifications` on a collection (3).
+Note that collections are live objects. This has two positive implications: Every access to the object reference always returns an updated representation of said object. Because of this, every subsequent change to the object will be visible any time the object is accessed again. We also get notifications for those changes if we subscribed to them. This can be done by calling `SubscribeForNotifications` on a collection (3).
 
 Apart from an error object that we need to check (4) we also receive the `changes` and the `sender` (the updated collection itself) with every notification. For every new collection of objects an initial notification is sent that does not include any `changes` but gives us the opportunity to do some initial setup work (5).
 
