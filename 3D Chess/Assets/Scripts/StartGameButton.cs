@@ -1,6 +1,5 @@
 using Realms;
 using Realms.Sync;
-using Realms.Sync.Exceptions;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -34,23 +33,12 @@ public class StartGameButton : MonoBehaviour
         {
             // This example focuses on an introduction to Sync.
             // We will keep the registration simple for now by just creating a random email and password.
-            // We'll also not create a seperate registration dialogue here and instead just try to register
+            // We'll also not create a seperate registration dialog here and instead just try to register
             // and if already registered, log in.
-            // In a different example we will focus on authentication methods, login / registration dialogues, etc.
+            // In a different example we will focus on authentication methods, login / registration dialogs, etc.
             var email = Guid.NewGuid().ToString();
             var password = Guid.NewGuid().ToString();
-            try
-            {
-                await app.EmailPasswordAuth.RegisterUserAsync(email, password);
-            }
-            catch (AppException appException)
-            {
-                // If the user is already registered we can just log in. Any other exception needs to be thrown.
-                if (!appException.Message.Contains("AccountNameInUse"))
-                {
-                    throw;
-                }
-            }
+            await app.EmailPasswordAuth.RegisterUserAsync(email, password);
             user = await app.LogInAsync(Credentials.EmailPassword(email, password));
         }
 
