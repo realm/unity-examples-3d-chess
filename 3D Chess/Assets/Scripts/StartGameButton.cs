@@ -46,6 +46,9 @@ public class StartGameButton : MonoBehaviour
 
         if (!File.Exists(RealmConfiguration.DefaultConfiguration.DatabasePath))
         {
+            // If this is the first time we start the game, we need to create a new Realm and sync it.
+            // This is done by `GetInstanceAsync`. There is nothing further we need to do here.
+            // The Realm is then used by `GameState` in it's `Awake` method.
             using var realm = await Realm.GetInstanceAsync();
         }
     }
