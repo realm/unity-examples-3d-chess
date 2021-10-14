@@ -18,12 +18,12 @@ The local Realm database we have seen in the previous tutorial is one of three c
 
 We will use Atlas as our backend and cloud-based database. Realm Sync on the other side enables sync between your local Realm database and Atlas, seamlessly stitching together the two components into an application layer for your game. To support these services, MongoDB Realm also provides components to fulfill several common application requirements:
 
-- Realm Users and Authentication provide built-in user management with easy integration into third-party authentication providers, like Facebook, Google, and Apple.
-- Realm Functions provide server-side logic for your Realm app. Similar to endpoints in a REST API, except instead of manually constructing the URL, headers, body, and method for a call to an HTTP endpoint, you call Realm Functions from a module of the Realm SDK in your client application.
-- Realm Triggers automatically execute a function at a scheduled time or when an event occurs, such as a change to a database or a call to a HTTP endpoint.
-- Realm Rules let you control who accesses what data.
-- Server-side Realm Values and Realm Secrets enable you to define global variables and private credentials once and use them across your entire Realm app.
-- Use the GraphQL API to access data stored in a linked MongoDB cluster using any standard GraphQL client.
+- [Realm Users and Authentication](https://docs.mongodb.com/realm/authentication/) provide built-in user management with easy integration into third-party authentication providers, like Facebook, Google, and Apple.
+- [Realm Functions](https://docs.mongodb.com/realm/functions/) provide server-side logic for your Realm app. Similar to endpoints in a REST API, except instead of manually constructing the URL, headers, body, and method for a call to an HTTP endpoint, you call Realm Functions from a module of the Realm SDK in your client application.
+- [Realm Triggers](https://docs.mongodb.com/realm/triggers/trigger-types/) automatically execute a function at a scheduled time or when an event occurs, such as a change to a database or a call to a HTTP endpoint.
+- [Realm Rules](https://docs.mongodb.com/realm/mongodb/define-roles-and-permissions/) let you control who accesses what data.
+- Server-side [Realm Values and Realm Secrets](https://docs.mongodb.com/realm/values-and-secrets/) enable you to define global variables and private credentials once and use them across your entire Realm app.
+- Use the [GraphQL API](https://docs.mongodb.com/realm/graphql/) to access data stored in a linked MongoDB cluster using any standard GraphQL client.
 
 The Realm SDKs let you call functions, authenticate users, sync remote realms, and query your local realms.
 
@@ -46,7 +46,7 @@ The local Realm is based on four building blocks:
 - `PieceSpawner`
 - `GameState`
 
-The `PieceEntity` alond with the `Vector3Entity` represents our model which include the two properties that make up a chess piece: type and position.
+The `PieceEntity` along with the `Vector3Entity` represents our model which include the two properties that make up a chess piece: type and position.
 
 ```c#
 ...
