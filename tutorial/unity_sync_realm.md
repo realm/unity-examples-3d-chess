@@ -199,7 +199,7 @@ sealed class Constants
 {
     public sealed class Realm
     {
-        public const string AppId = "3d_chess-sjdkk";
+        public const string AppId = "insert your Realm App ID here";
     }
 
     public sealed class PlayerPrefsKeys
