@@ -116,7 +116,7 @@ Using `GameObject -> UI` we then add `Text`, `Input Field` and `Button` to the n
 
 ## Getting everything in Sync
 
-Add a script to the button called `StartGameButton` by clicking `Add Component` in the Inspector with the start button selected. Then select `script` and type in it's name.
+Add a script to the button called `StartGameButton` by clicking `Add Component` in the Inspector with the start button selected. Then select `script` and type in its name.
 
 ```c#
 using Realms;
