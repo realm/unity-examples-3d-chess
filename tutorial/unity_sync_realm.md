@@ -216,7 +216,7 @@ One more thing we need to do is adding the main scene in the build settings, oth
 
 <img src="images/03_build_settings.png" alt="Build Settings" width="500"/>
 
-With these adjustments we are ready to synchronise data. Let's add the loading indicator to make improve the user experience before we start and test our game.
+With these adjustments we are ready to synchronise data. Let's add the loading indicator to improve the user experience before we start and test our game.
 
 ## Loading Indicator
 
