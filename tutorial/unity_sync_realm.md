@@ -96,9 +96,7 @@ The local Realm tutorial showed you how to create a persisted game locally. Whil
 
 This would still be the same when using Realm Sync if we do not separate those games. Everyone accessing the game from wherever they are would see the same state. We need a way to create multiple games and identify which one we are playing. Realm Sync offers a feature that let's use achieve exactly this: [partitions](https://docs.mongodb.com/realm/sync/partitions/).
 
-```
-A partition represents a subset of the documents in a synced cluster that are related in some way and have the same read/write permissions for a given user. Realm directly maps partitions to individual synced .realm files so each object in a synced realm has a corresponding document in the partition.
-```
+> A partition represents a subset of the documents in a synced cluster that are related in some way and have the same read/write permissions for a given user. Realm directly maps partitions to individual synced .realm files so each object in a synced realm has a corresponding document in the partition.
 
 What does this mean for our game? If we use one partition per match we can make sure that only players using the same partition will actually play the same game. Furthermore, we can start as many games as we want. Using the same partition simply means using the same `partiton key` when opening a synced Realm. Partition keys are restricted to the following types: `String`, `ObjectID`, `Int`, `Long`.
 
