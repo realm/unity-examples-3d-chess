@@ -94,7 +94,7 @@ public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
 
 The local Realm tutorial showed you how to create a persisted game locally. While you could play with someone else using the same game client, there was only ever one game running at a time since every game is accessing the same table in the database and therefore the same objects.
 
-This would still be the same when using Realm Sync if we do not separate those games. Everyone accessing the game from wherever they are would see the same state. We need a way to create multiple games and identify which one we are playing. Realm Sync offers a feature that let's use achieve exactly this: [partitions](https://docs.mongodb.com/realm/sync/partitions/).
+This would still be the same when using Realm Sync if we do not separate those games. Everyone accessing the game from wherever they are would see the same state. We need a way to create multiple games and identify which one we are playing. Realm Sync offers a feature that let's us achieve exactly this: [partitions](https://docs.mongodb.com/realm/sync/partitions/).
 
 > A partition represents a subset of the documents in a synced cluster that are related in some way and have the same read/write permissions for a given user. Realm directly maps partitions to individual synced .realm files so each object in a synced realm has a corresponding document in the partition.
 
@@ -320,7 +320,11 @@ Within the `Clones Manager` you add and open a new clone by clicking `Add new cl
 
 <img src="images/13_parallel_sync_clones_manager.png" alt="Parallel Sync Clones Manager" width="500"/>
 
-Using both instances you can then test the game and Realm Sync. Have fun!
+Using both instances you can then test the game and Realm Sync.
+
+Remember that you need to use the same `game id` / `partition key` to join the same game with both instances.
+
+Have fun!
 
 ## Recap and Conclusion
 
