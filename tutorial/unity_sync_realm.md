@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Playing a game locally can be fun at times. But there is nothing more exciting than playing with or against the whole world. Using Realm Sync you can easily synchronise data between multiple instances and turn your local game into an online experience.
+Playing a game locally can be fun at times. But there is nothing more exciting than playing with or against the whole world. Using Realm Sync you can easily synchronize data between multiple instances and turn your local game into an online experience.
 
 In [a previous tutorial](https://github.com/realm/unity-examples-3d-chess/blob/local-realm/tutorial/unity_local_realm.md) we showed how to use Realm locally to persist your game's data. We will build on the local Realm to show how to easily transition to Realm Sync.
 
@@ -14,7 +14,7 @@ The [final of result of this tutorial](https://github.com/realm/unity-examples-3
 
 ## MongoDB Realm Sync and MongoDB Atlas
 
-The local Realm database we have seen in the previous tutorial is one of three components we need to synchronise data between multiple instances of our game. The other two are [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and [MongoDB Realm Sync](https://www.mongodb.com/realm).
+The local Realm database we have seen in the previous tutorial is one of three components we need to synchronize data between multiple instances of our game. The other two are [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and [MongoDB Realm Sync](https://www.mongodb.com/realm).
 
 We will use Atlas as our backend and cloud-based database. Realm Sync on the other side enables sync between your local Realm database and Atlas, seamlessly stitching together the two components into an application layer for your game. To support these services, MongoDB Realm also provides components to fulfill several common application requirements:
 
@@ -188,7 +188,7 @@ The actual values for `email` and `password` are not really relevant for this ex
 
 When we are done with the login, all we need to do is to create a new `SyncConfiguration` with the `gameId` (which acts as our partition key) and the `user` and save it as the `RealmConfiguration.DefaultConfiguration`. This will make sure whenever we open a new Realm, we will be using this `user` and `partitionKey`.
 
-Finally we want to open the Realm and synchronise it to get it ready for the game. We can detect if this is the first start of the game simply by checking if a Realm file for the given coonfiguration already exists or not (11). If there is no such file we open a Realm using `Realm.GetInstanceAsync()` (12) which automatically uses the `DefaultConfiguration` that we set before.
+Finally we want to open the Realm and synchronize it to get it ready for the game. We can detect if this is the first start of the game simply by checking if a Realm file for the given coonfiguration already exists or not (11). If there is no such file we open a Realm using `Realm.GetInstanceAsync()` (12) which automatically uses the `DefaultConfiguration` that we set before.
 
 When this is done, we can load the main scene (13) using the `SceneManager`. Note that the name of the main scene was extracted into a file called `Constants` in which we also added the app id and the key we use to save the `game id` in the `PlayerPrefs`. You can either add another class in your IDE or in Unity (using `Assets -> Create -> C# Script`).
 
@@ -216,7 +216,7 @@ One more thing we need to do is adding the main scene in the build settings, oth
 
 <img src="images/03_build_settings.png" alt="Build Settings" width="500"/>
 
-With these adjustments we are ready to synchronise data. Let's add the loading indicator to improve the user experience before we start and test our game.
+With these adjustments we are ready to synchronize data. Let's add the loading indicator to improve the user experience before we start and test our game.
 
 ## Loading Indicator
 
