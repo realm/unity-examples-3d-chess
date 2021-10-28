@@ -39,7 +39,7 @@ The local Realm is based on four building blocks:
 
 The `PieceEntity` along with the `Vector3Entity` represents our model which include the two properties that make up a chess piece: type and position.
 
-```c#
+```cs
 ...
 
 public class PieceEntity : RealmObject
@@ -71,11 +71,11 @@ All of this comes together in the central part of the game that manages the flow
 
 The first thing we need to change to get the local Realm example ready for Sync is to [add a PrimaryKey to the PieceType](https://docs.mongodb.com/realm/sdk/dotnet/quick-start-with-sync/#define-your-object-model). This is a mandatory requirement for Sync to make sure objects can be distinguished from each other. We will be using the field `Id` here. Note that you can add a `MapTo` attribute in case the name of the field in the `RealmObject` differs from the name set in Atlas. By default the primary key is named `_id` in Atlas which would conflict with the .NET coding guidelines. By adding `[MapTo("_id")]` we can address this fact.
 
-```c#
+```cs
 using MongoDB.Bson;
 ```
 
-```c#
+```cs
 [PrimaryKey]
 [MapTo("_id")]
 public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
@@ -107,7 +107,7 @@ Using `GameObject -> UI` we then add `Text`, `Input Field` and `Button` to the n
 
 Add a script to the button called `StartGameButton` by clicking `Add Component` in the Inspector with the start button selected. Then select `script` and type in its name.
 
-```c#
+```cs
 using Realms;
 using Realms.Sync;
 using System;
@@ -183,7 +183,7 @@ Finally we want to open the Realm and synchronize it to get it ready for the gam
 
 When this is done, we can load the main scene (13) using the `SceneManager`. Note that the name of the main scene was extracted into a file called `Constants` in which we also added the app id and the key we use to save the `game id` in the `PlayerPrefs`. You can either add another class in your IDE or in Unity (using `Assets -> Create -> C# Script`).
 
-```c#
+```cs
 sealed class Constants
 {
     public sealed class Realm
@@ -225,7 +225,7 @@ You can arrange and style the UI elements to your liking and when you're done ju
 
 The script itself should look like this:
 
-```c#
+```cs
 using UnityEngine;
 
 public class LoadingIndicator : MonoBehaviour
@@ -266,14 +266,14 @@ public class LoadingIndicator : MonoBehaviour
 }
 ```
 
-The loading indicator that we will be using for this example is just a simple square moving sideways to indicate progress. There are three fields (1) we are going to expose to the Unity Editor by using `SerializeField` so that you can adjust these values while seing the indicator move. `maxLeft` will tell the indicator how far to move to the left from the original position, `maxRight` does the same for the right side. `speed` - as the name indicates - will determine how fast the indicator moves. The initial movement direction (2) is set to left, with `Left` and `Right` being the options given here.
+The loading indicator that we will be using for this example is just a simple square moving sideways to indicate progress. There are two fields (1) we are going to expose to the Unity Editor by using `SerializeField` so that you can adjust these values while seing the indicator move. `maxMovement` will tell the indicator how far to move to the left and right from the original position. `speed` - as the name indicates - will determine how fast the indicator moves. The initial movement direction (2) is set to left, with `Vector3.Left` and `Vector3.Right` being the options given here.
 
 The movement itself will be calculated in `Update()` which is run every frame. We basically just want to do one of two things:
 
 - Move the loading indicator to the left until it reaches the left boundary, then swap the movement direction.
 - Move the loading indicator to the right until it reaches the right boundary, then swap the movement direction.
 
-We're using the `MovementDirection` to distinguish (3) between those two states. Using the [`transform`](https://docs.unity3d.com/ScriptReference/Transform.html) component of the `GameObject` we can move it by calling `Translate`. The movement consists of the direction (`Vector3.left` or `Vector3.right`), the speed (set via the Unity Editor) and `Time.deltaTime` which represents the time since the last frame. The latter makes sure we see a smooth movement no matter what the frame time is. After moving the square we check (4) if we have reached the boundary and if so, set the position to this boundary (5). This is just to make sure the indicator does not visibly slip out of bounds in case we see a low frame rate. Finally the position is swapped (6).
+Using the [`transform`](https://docs.unity3d.com/ScriptReference/Transform.html) component of the `GameObject` we can move it by calling `Translate`. The movement consists of the direction (`Vector3.left` or `Vector3.right`), the speed (set via the Unity Editor) and `Time.deltaTime` which represents the time since the last frame. The latter makes sure we see a smooth movement no matter what the frame time is. After moving the square we check (3) if we have reached the boundary and if so, set the position to this boundary (4). This is just to make sure the indicator does not visibly slip out of bounds in case we see a low frame rate. Finally the position is swapped (5).
 
 The loading indicator will only be shown when the start button is clicked. The script above takes care of showing it. We need to disable it so that it does not show up before. This can be done by clicking the checkbox next to the name of the `LoadingIndicator` parent object in the Inspector.
 
