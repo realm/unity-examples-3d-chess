@@ -24,7 +24,7 @@ There are a couple of things we need to prepare in order to enable synchronisati
 - [Create a Realm App](https://docs.mongodb.com/realm/manage-apps/create/create-with-realm-ui/#std-label-create-a-realm-app)
 - [Enable Sync](https://docs.mongodb.com/realm/sync/rules/#std-label-sync-rules)
 - [Enable Developer Mode](https://docs.mongodb.com/realm/sync/enable-development-mode/#std-label-enable-development-mode)
-- [Enable email registration](https://docs.mongodb.com/realm/authentication/email-password/)
+- [Enable email registration](https://docs.mongodb.com/realm/authentication/email-password/) and choose `Automatically confirm users` under `User Confirmation Method`
 
 ## Example
 
