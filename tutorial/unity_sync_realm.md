@@ -16,16 +16,7 @@ The [final of result of this tutorial](https://github.com/realm/unity-examples-3
 
 The local Realm database we have seen in the previous tutorial is one of three components we need to synchronize data between multiple instances of our game. The other two are [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and [MongoDB Realm Sync](https://www.mongodb.com/realm).
 
-We will use Atlas as our backend and cloud-based database. Realm Sync on the other side enables sync between your local Realm database and Atlas, seamlessly stitching together the two components into an application layer for your game. To support these services, MongoDB Realm also provides components to fulfill several common application requirements:
-
-- [Realm Users and Authentication](https://docs.mongodb.com/realm/authentication/) provide built-in user management with easy integration into third-party authentication providers, like Facebook, Google, and Apple.
-- [Realm Functions](https://docs.mongodb.com/realm/functions/) provide server-side logic for your Realm app. Similar to endpoints in a REST API, except instead of manually constructing the URL, headers, body, and method for a call to an HTTP endpoint, you call Realm Functions from a module of the Realm SDK in your client application.
-- [Realm Triggers](https://docs.mongodb.com/realm/triggers/trigger-types/) automatically execute a function at a scheduled time or when an event occurs, such as a change to a database or a call to a HTTP endpoint.
-- [Realm Rules](https://docs.mongodb.com/realm/mongodb/define-roles-and-permissions/) let you control who accesses what data.
-- Server-side [Realm Values and Realm Secrets](https://docs.mongodb.com/realm/values-and-secrets/) enable you to define global variables and private credentials once and use them across your entire Realm app.
-- Use the [GraphQL API](https://docs.mongodb.com/realm/graphql/) to access data stored in a linked MongoDB cluster using any standard GraphQL client.
-
-The Realm SDKs let you call functions, authenticate users, sync remote realms, and query your local realms.
+We will use Atlas as our backend and cloud-based database. Realm Sync on the other side enables sync between your local Realm database and Atlas, seamlessly stitching together the two components into an application layer for your game. To support these services, MongoDB Realm also provides [components to fulfill several common application requirements](https://docs.mongodb.com/realm/get-started/introduction-mobile/#mongodb-realm) from which we will be using the [Realm Users and Authentication](https://docs.mongodb.com/realm/authentication/) feature to register and login the user.
 
 There are a couple of things we need to prepare in order to enable synchronisation in our app. You can find an overview on [how to get started with MongoDB Realm Sync](https://docs.mongodb.com/realm/sync/get-started/#std-label-enable-sync) in the documentation. Here are the steps we need to take:
 
