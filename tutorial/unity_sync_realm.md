@@ -99,7 +99,7 @@ Go to `Assets -> Create -> Scene` to create a new scene and name it `WelcomeScen
 
 <img src="images/01_add_scene.png" alt="Adding a scene" width="500"/>
 
-Using `GameObject -> UI` we then add `Text`, `Input Field` and `Button` to the new scene. The input will be our partition key. To make it easier to understand for the player we will call it's placeholder `game id`. The `Text` object can be set to `Your Game ID:` and the button's text to `Start Game`. Make sure to reposition them to your liking.
+Using `GameObject -> UI` we then add `Text`, `Input Field` and `Button` to the new scene. The input will be our partition key. To make it easier to understand for the player we will call its placeholder `game id`. The `Text` object can be set to `Your Game ID:` and the button's text to `Start Game`. Make sure to reposition them to your liking.
 
 <img src="images/02_adding_ui.png" alt="Adding UI" width="500"/>
 
@@ -173,7 +173,7 @@ First, we want to show a loading indicator (4) in case loading the game takes a 
 Next, we need to create a Realm (5). Note that this is done asynchrounously using `await`. There are a couple of components necessary for opening a synced Realm:
 
 - `app`: An instance of `App` (6) represents your Realm App that you created in Atlas. Therefore we need to pass the `app id` in here.
-- `user`: If a user has been logged in before, we can access them by using `app.currentUser` (7). In case there has not been a successful login before this variable will be null (8). In this case we need to register in a new user. For our simple example we can furthermore assume that no user was registered before and the game was started for the first time.
+- `user`: If a user has been logged in before, we can access them by using `app.CurrentUser` (7). In case there has not been a successful login before this variable will be null (8) and we need to register a new user.
 
 The actual values for `email` and `password` are not really relevant for this example. In your game you would use more `Input Field` objects to ask the user for this data. Here we can just use `Guid` to generate random values. Using `EmailPasswordAuth.RegisterUserAsync` offered by the `App` class we can then register the user (9) and finally log them in (10) using these credentials. Note that we need to await this asynchrounous call again.
 
