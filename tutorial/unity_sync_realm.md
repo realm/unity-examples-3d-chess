@@ -144,8 +144,7 @@ public class StartGameButton : MonoBehaviour
         {
             // This example focuses on an introduction to Sync.
             // We will keep the registration simple for now by just creating a random email and password.
-            // We'll also not create a seperate registration dialog here and instead just try to register
-            // and if already registered, log in.
+            // We'll also not create a separate registration dialog here and instead just register a new user every time.
             // In a different example we will focus on authentication methods, login / registration dialogs, etc.
             var email = Guid.NewGuid().ToString();
             var password = Guid.NewGuid().ToString();
