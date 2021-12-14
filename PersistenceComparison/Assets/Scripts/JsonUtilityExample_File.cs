@@ -8,6 +8,12 @@ public class JsonUtilityExample_File : MonoBehaviour
     // https://docs.unity3d.com/Manual/script-Serialization.html
     // https://docs.unity3d.com/ScriptReference/Serializable.html
 
+    [System.Serializable]
+    public class HitCountWrapper
+    {
+        public int value;
+    }
+
     [SerializeField] private int hitCount = 0;
 
     private readonly string fileName = "Temp/JsonUtilityExample_File.txt";

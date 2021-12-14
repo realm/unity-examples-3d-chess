@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 public class JsonUtilityExample_PlayerPrefs : MonoBehaviour
 {
@@ -9,6 +6,12 @@ public class JsonUtilityExample_PlayerPrefs : MonoBehaviour
     // https://docs.unity3d.com/ScriptReference/JsonUtility.html
     // https://docs.unity3d.com/Manual/script-Serialization.html
     // https://docs.unity3d.com/ScriptReference/Serializable.html
+
+    [System.Serializable]
+    public class HitCountWrapper
+    {
+        public int value;
+    }
 
     [SerializeField] private int hitCount = 0;
 

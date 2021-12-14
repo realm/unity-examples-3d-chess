@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO;
 
 public class JsonUtilityExample_BinaryReaderWriter : MonoBehaviour
@@ -8,6 +7,12 @@ public class JsonUtilityExample_BinaryReaderWriter : MonoBehaviour
     // https://docs.unity3d.com/ScriptReference/JsonUtility.html
     // https://docs.unity3d.com/Manual/script-Serialization.html
     // https://docs.unity3d.com/ScriptReference/Serializable.html
+
+    [System.Serializable]
+    public class HitCountWrapper
+    {
+        public int value;
+    }
 
     [SerializeField] private int hitCount = 0;
 
@@ -26,19 +31,19 @@ public class JsonUtilityExample_BinaryReaderWriter : MonoBehaviour
             }
             // Always close a FileStream when you're done with it.
             fileStream.Close();
-            HitCountWrapper hitCountEntity = JsonUtility.FromJson<HitCountWrapper>(jsonString);
-            if (hitCountEntity != null)
+            HitCountWrapper hitCountWrapper = JsonUtility.FromJson<HitCountWrapper>(jsonString);
+            if (hitCountWrapper != null)
             {
-                hitCount = hitCountEntity.value;
+                hitCount = hitCountWrapper.value;
             }
         }
     }
 
     private void OnApplicationQuit()
     {
-        HitCountWrapper hitCountEntity = new();
-        hitCountEntity.value = hitCount;
-        string jsonString = JsonUtility.ToJson(hitCountEntity);
+        HitCountWrapper hitCountWrapper = new();
+        hitCountWrapper.value = hitCount;
+        string jsonString = JsonUtility.ToJson(hitCountWrapper);
         FileStream fileStream = File.Open(fileName, FileMode.Create);
         using (BinaryWriter binaryWriter = new(fileStream))
         {
