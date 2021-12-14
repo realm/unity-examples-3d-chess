@@ -29,29 +29,24 @@ public class RealmExample : MonoBehaviour
     {
         // Open a database connection.
         realm = Realm.GetInstance();
-
-        // Read the hit count data from the database.
+        
         hitCountEntity = realm.Find<HitCountEntity>(1);
         if (hitCountEntity != null)
         {
+            // Read the hit count data from the database.
             hitCount = hitCountEntity.Value;
+        }
+        else
+        {
+            // In case the database was empty, create a new `HitCountEntity`.
+            hitCountEntity = new HitCountEntity(1);
+            realm.Add(hitCountEntity);
         }
     }
 
     private void OnApplicationQuit()
     {
-        realm.Write(() =>
-        {
-            // In case the database was empty, create a new `HitCountEntity`.
-            if (hitCountEntity == null)
-            {
-                hitCountEntity = new HitCountEntity(1);
-                realm.Add(hitCountEntity);
-            }
-
-            // Update the hit count in the database.
-            hitCountEntity.Value = hitCount;
-        });
+        
 
         realm.Dispose();
     }
@@ -59,5 +54,10 @@ public class RealmExample : MonoBehaviour
     private void OnMouseDown()
     {
         hitCount++;
+
+        realm.Write(() =>
+        {
+            hitCountEntity.Value = hitCount;
+        });
     }
 }

@@ -24,31 +24,52 @@ public class FileStreamExample : MonoBehaviour
 
     private void Start()
     {
-        string textFileWriteAllText = File.ReadAllText(fileFileWriteAllText);
-        hitCountFileWriteAllText = Int32.Parse(textFileWriteAllText);
-
-        string[] textFileWriteAllLines = File.ReadAllLines(fileFileWriteAllLines);
-        hitCountFileWriteAllLines = Int32.Parse(textFileWriteAllLines[0]);
-
-        using FileStream fileStream = File.OpenRead(fileFileStream);
-        byte[] byteArray = new byte[1024];
-        UTF8Encoding utf8Encoding = new(true);
-        while (fileStream.Read(byteArray, 0, byteArray.Length) > 0)
+        if (File.Exists(fileFileWriteAllText))
         {
-            hitCountFileStream = Int32.Parse(utf8Encoding.GetString(byteArray));
+            string textFileWriteAllText = File.ReadAllText(fileFileWriteAllText);
+            hitCountFileWriteAllText = Int32.Parse(textFileWriteAllText);
         }
 
-        using StreamReader streamReaderFile = new(fileStreamWriter);
-        string textStreamReader = streamReaderFile.ReadLine();
-        hitCountStreamWriter = Int32.Parse(textStreamReader);
+        if (File.Exists(fileFileWriteAllLines))
+        {
+            string[] textFileWriteAllLines = File.ReadAllLines(fileFileWriteAllLines);
+            hitCountFileWriteAllLines = Int32.Parse(textFileWriteAllLines[0]);
+        }
 
-        using StreamReader streamReaderFileStream = new(new FileStream(fileStreamWriterFileStream, FileMode.Open));
-        string textStreamReader2 = streamReaderFileStream.ReadLine();
-        hitCountStreamWriterFileStream = Int32.Parse(textStreamReader2);
+        if (File.Exists(fileFileStream))
+        {
+            using FileStream fileStream = File.OpenRead(fileFileStream);
+            byte[] byteArray = new byte[1024];
+            UTF8Encoding utf8Encoding = new(true);
+            while (fileStream.Read(byteArray, 0, byteArray.Length) > 0)
+            {
+                hitCountFileStream = Int32.Parse(utf8Encoding.GetString(byteArray));
+            }
+        }
+
+        if (File.Exists(fileStreamWriter))
+        {
+            using StreamReader streamReaderFile = new(fileStreamWriter);
+            string textStreamReader = streamReaderFile.ReadLine();
+            hitCountStreamWriter = Int32.Parse(textStreamReader);
+        }
+
+        if (File.Exists(fileStreamWriterFileStream))
+        {
+            using StreamReader streamReaderFileStream = new(new FileStream(fileStreamWriterFileStream, FileMode.Open));
+            string textStreamReader2 = streamReaderFileStream.ReadLine();
+            hitCountStreamWriterFileStream = Int32.Parse(textStreamReader2);
+        }
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCountFileWriteAllText++;
+        hitCountFileWriteAllLines++;
+        hitCountFileStream++;
+        hitCountStreamWriter++;
+        hitCountStreamWriterFileStream++;
+
         // The easiest way when working with Files is to use them directly.
         // This writes all input at once and overwrites a file if executed again.
         // The File is opened and closed right away.
@@ -78,15 +99,6 @@ public class FileStreamExample : MonoBehaviour
         // Once again, it can write multiple times. Streams are kept open until closed.
         using StreamWriter straemWriterFileStream = new(new FileStream(fileStreamWriterFileStream, FileMode.Create));
         straemWriterFileStream.Write(hitCountStreamWriterFileStream.ToString());
-    }
-
-    private void OnMouseDown()
-    {
-        hitCountFileWriteAllText++;
-        hitCountFileWriteAllLines++;
-        hitCountFileStream++;
-        hitCountStreamWriter++;
-        hitCountStreamWriterFileStream++;
     }
 
 }

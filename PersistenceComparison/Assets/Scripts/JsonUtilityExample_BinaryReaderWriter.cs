@@ -39,8 +39,10 @@ public class JsonUtilityExample_BinaryReaderWriter : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCount++;
+
         HitCountWrapper hitCountWrapper = new();
         hitCountWrapper.value = hitCount;
         string jsonString = JsonUtility.ToJson(hitCountWrapper);
@@ -51,10 +53,5 @@ public class JsonUtilityExample_BinaryReaderWriter : MonoBehaviour
         }
         // Always close a FileStream when you're done with it.
         fileStream.Close();
-    }
-
-    private void OnMouseDown()
-    {
-        hitCount++;
     }
 }

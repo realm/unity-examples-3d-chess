@@ -31,16 +31,14 @@ public class JsonUtilityExample_PlayerPrefs : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCount++;
+
         HitCountWrapper hitCountEntity = new();
         hitCountEntity.value = hitCount;
         string jsonString = JsonUtility.ToJson(hitCountEntity);
         PlayerPrefs.SetString(hitCountKey, jsonString);
-    }
-
-    private void OnMouseDown()
-    {
-        hitCount++;
+        PlayerPrefs.Save();
     }
 }

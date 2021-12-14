@@ -28,19 +28,16 @@ public class BinaryReaderWriterExample : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCount++;
+
         // Open a stream to the file that the `BinaryReader` can use to read data.
         // They need to be disposed at the end, so `using` is good practice
         // because it does this automatically.
         using FileStream fileStream = File.Open(fileName, FileMode.Create);
         using BinaryWriter binaryWriter = new(fileStream);
         binaryWriter.Write(hitCount);
-    }
-
-    private void OnMouseDown()
-    {
-        hitCount++;
     }
 
 }

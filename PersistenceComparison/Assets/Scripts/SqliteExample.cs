@@ -27,18 +27,15 @@ public class SqliteExample : MonoBehaviour
         dbConnection.Close();
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCount++;
+
         // Insert a value into the table.
         IDbConnection dbConnection = CreateAndOpenDatabase();
         IDbCommand dbCommandInsertValue = dbConnection.CreateCommand();
         dbCommandInsertValue.CommandText = "INSERT OR REPLACE INTO HitCountTable (id, value) VALUES (0, " + hitCount + ")";
         dbCommandInsertValue.ExecuteNonQuery();
-    }
-
-    private void OnMouseDown()
-    {
-        hitCount++;
     }
 
     private IDbConnection CreateAndOpenDatabase()

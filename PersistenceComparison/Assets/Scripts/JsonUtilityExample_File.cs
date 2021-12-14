@@ -32,16 +32,13 @@ public class JsonUtilityExample_File : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnMouseDown()
     {
+        hitCount++;
+
         HitCountWrapper hitCountEntity = new();
         hitCountEntity.value = hitCount;
         string jsonString = JsonUtility.ToJson(hitCountEntity);
         File.WriteAllText(fileName, jsonString);
-    }
-
-    private void OnMouseDown()
-    {
-        hitCount++;
     }
 }

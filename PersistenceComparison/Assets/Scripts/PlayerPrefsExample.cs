@@ -21,15 +21,13 @@ public class PlayerPrefsExample : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
-    {
-        // Set and save the hit count before ending the game.
-        PlayerPrefs.SetInt(hitCountKey, hitCount);
-        PlayerPrefs.Save();
-    }
     private void OnMouseDown()
     {
         hitCount++;
+
+        // Set and save the hit count before ending the game.
+        PlayerPrefs.SetInt(hitCountKey, hitCount);
+        PlayerPrefs.Save();
     }
 
 }
