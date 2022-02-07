@@ -46,7 +46,6 @@ public class RealmExample : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-
         realm.Dispose();
     }
 
