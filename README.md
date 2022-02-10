@@ -1,2 +1,1 @@
-# unity-examples-3d-chess
-Examples and tutorials for the Realm Unity SDK.
+# This repository has been moved to https://github.com/realm/unity-examples
